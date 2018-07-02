@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Answer.King.Domain.Orders.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Answer.King.Domain.Orders.Models;
 
 namespace Answer.King.Domain.Orders
 {
@@ -95,7 +95,6 @@ namespace Answer.King.Domain.Orders
             }
 
             this.LastUpdated = DateTime.UtcNow;
-
         }
 
         public void CompleteOrder()

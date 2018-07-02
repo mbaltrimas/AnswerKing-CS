@@ -70,7 +70,6 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
         public async Task<IActionResult> Post([FromBody] CreateProduct createProduct)
         {
-
             var category = await this.Categories.Get(createProduct.Category.Id);
 
             if (category == null)
