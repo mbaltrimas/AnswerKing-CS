@@ -1,20 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Answer.King.Domain.Orders;
 using Answer.King.Domain.Repositories;
 
-namespace Answer.King.Infrastructure.Aggregate
+namespace Answer.King.Infrastructure.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
-        public Task<Order> GetOrCreate(Guid id)
+        public OrderRepository()
         {
-            throw new System.NotImplementedException();
+            this.Orders = OrderData.Orders;
         }
 
-        public Task Save(Order aggregate)
+        private IList<Order> Orders { get; }
+
+        public Task<Order> Get(Guid id)
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(this.Orders.SingleOrDefault(o => o.Id == id));
+        }
+
+        public Task Save(Order item)
+        {
+            this.Orders.Add(item);
+            return Task.CompletedTask;
         }
     }
 }

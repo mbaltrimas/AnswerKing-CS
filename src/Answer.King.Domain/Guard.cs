@@ -215,7 +215,7 @@ namespace Answer.King.Domain
         }
 
         [DebuggerStepThrough]
-        public static void AgainstNegativeValue(string parameterName, float value)
+        public static void AgainstNegativeValue(string parameterName, double value)
         {
             if (value < 0)
             {

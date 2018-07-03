@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Answer.King.Domain.Orders;
 
-namespace Answer.King.Infrastructure.Aggregate
+namespace Answer.King.Infrastructure.Repositories
 {
     internal static class OrderFactory
     {

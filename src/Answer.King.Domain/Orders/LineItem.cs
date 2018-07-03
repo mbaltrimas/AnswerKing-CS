@@ -38,7 +38,7 @@ namespace Answer.King.Domain.Orders
                 throw new LineItemException($"Cannot remove {quantity} from {this.Quantity}.");
             }
 
-            this.Quantity += quantity;
+            this.Quantity -= quantity;
         }
     }
 

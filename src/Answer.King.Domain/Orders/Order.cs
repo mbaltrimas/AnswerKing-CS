@@ -15,6 +15,7 @@ namespace Answer.King.Domain.Orders
             this._LineItems = new List<LineItem>();
         }
 
+        // ReSharper disable once UnusedMember.Local
         private Order(
             Guid id,
             DateTime createdOn,
@@ -41,13 +42,13 @@ namespace Answer.King.Domain.Orders
 
         public OrderStatus OrderStatus { get; private set; }
 
-        public float OrderTotal => this.LineItems.Sum(li => li.Product.Price);
+        public double OrderTotal => this.LineItems.Sum(li => li.Product.Price);
 
         private IList<LineItem> _LineItems { get; }
 
         public IReadOnlyCollection<LineItem> LineItems => this._LineItems as List<LineItem>;
 
-        public void AddLineItem(Guid productId, string name, string description, float price, Category category, int quantity = 1)
+        public void AddLineItem(Guid productId, string name, string description, double price, Category category, int quantity = 1)
         {
             if (this.OrderStatus != OrderStatus.Created)
             {
@@ -84,12 +85,12 @@ namespace Answer.King.Domain.Orders
 
         public void CompleteOrder()
         {
-            if (this.OrderStatus != OrderStatus.Complete)
+            if (this.OrderStatus != OrderStatus.Completed)
             {
                 throw new OrderLifeCycleException($"Cannot complete order - Order status {this.OrderStatus}.");
             }
 
-            this.OrderStatus = OrderStatus.Complete;
+            this.OrderStatus = OrderStatus.Completed;
             this.LastUpdated = DateTime.UtcNow;
         }
 
@@ -108,7 +109,7 @@ namespace Answer.King.Domain.Orders
     public enum OrderStatus
     {
         Created = 0,
-        Complete = 1,
+        Completed = 1,
         Cancelled = 2
     }
 
