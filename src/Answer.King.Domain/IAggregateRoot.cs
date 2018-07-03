@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Answer.King.Domain.Aggregate
+namespace Answer.King.Domain
 {
     public interface IAggregateRoot
     {

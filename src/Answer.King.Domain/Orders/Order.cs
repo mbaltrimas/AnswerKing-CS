@@ -1,17 +1,9 @@
-﻿using Answer.King.Domain.Aggregate;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Answer.King.Domain.Orders
 {
-    public enum OrderStatus
-    {
-        Created = 0,
-        Paid = 1,
-        Cancelled = 2
-    }
-
     // Todo: look at custom deserialisation: https://stackoverflow.com/questions/42336751/custom-deserialization
     public class Order : IAggregateRoot
     {
@@ -21,16 +13,14 @@ namespace Answer.King.Domain.Orders
             this.LastUpdated = this.CreatedOn = DateTime.UtcNow;
             this.OrderStatus = OrderStatus.Created;
             this._LineItems = new List<LineItem>();
-            this.Payments = new List<float>();
         }
 
-        internal Order(
+        private Order(
             Guid id,
             DateTime createdOn,
             DateTime lastUpdated,
             OrderStatus status,
-            IList<LineItem> lineItems,
-            IList<float> payments)
+            IList<LineItem> lineItems)
         {
             Guard.AgainstDefaultValue(nameof(id), id);
             Guard.AgainstDefaultValue(nameof(createdOn), createdOn);
@@ -41,7 +31,6 @@ namespace Answer.King.Domain.Orders
             this.LastUpdated = lastUpdated;
             this.OrderStatus = status;
             this._LineItems = lineItems;
-            this.Payments = payments;
         }
 
         public Guid Id { get; }
@@ -53,10 +42,6 @@ namespace Answer.King.Domain.Orders
         public OrderStatus OrderStatus { get; private set; }
 
         public float OrderTotal => this.LineItems.Sum(li => li.Product.Price);
-
-        private float Balance => this.OrderTotal - this.Payments.Sum();
-
-        private IList<float> Payments { get; }
 
         private IList<LineItem> _LineItems { get; }
 
@@ -97,26 +82,14 @@ namespace Answer.King.Domain.Orders
             }
         }
 
-        public void MakePayment(float amount)
+        public void CompleteOrder()
         {
-            if (this.OrderStatus != OrderStatus.Created)
+            if (this.OrderStatus != OrderStatus.Complete)
             {
-                throw new OrderLifeCycleException($"Cannot make payment - Order status {this.OrderStatus}.");
+                throw new OrderLifeCycleException($"Cannot complete order - Order status {this.OrderStatus}.");
             }
 
-            if (amount > this.Balance)
-            {
-                throw new OrderPaymentException($"Balance £{this.Balance} is less than amount being paid £{amount}");
-            }
-
-            this.Payments.Add(amount);
-
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (this.Balance == 0.0)
-            {
-                this.OrderStatus = OrderStatus.Paid;
-            }
-
+            this.OrderStatus = OrderStatus.Complete;
             this.LastUpdated = DateTime.UtcNow;
         }
 
@@ -124,12 +97,19 @@ namespace Answer.King.Domain.Orders
         {
             if (this.OrderStatus == OrderStatus.Cancelled)
             {
-                throw new OrderLifeCycleException($"Cannot cancel - Order status {this.OrderStatus}.");
+                throw new OrderLifeCycleException($"Cannot cancel order - Order status {this.OrderStatus}.");
             }
 
             this.OrderStatus = OrderStatus.Cancelled;
             this.LastUpdated = DateTime.UtcNow;
         }
+    }
+
+    public enum OrderStatus
+    {
+        Created = 0,
+        Complete = 1,
+        Cancelled = 2
     }
 
     [Serializable]
