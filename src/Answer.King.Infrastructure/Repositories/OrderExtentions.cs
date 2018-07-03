@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Answer.King.Domain.Orders;
+using Answer.King.Domain.Orders.Models;
 
 namespace Answer.King.Infrastructure.Repositories
 {

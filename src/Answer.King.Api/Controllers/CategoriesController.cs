@@ -1,75 +1,74 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Answer.King.Domain.Orders;
 using Answer.King.Domain.Repositories;
+using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Answer.King.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class CategoriesController : ControllerBase
     {
-        public OrdersController(IOrderRepository orders)
+        public CategoriesController(ICategoryRepository categories)
         {
-            this.Orders = orders;
+            this.Categories = categories;
         }
 
-        private IOrderRepository Orders { get; }
+        private ICategoryRepository Categories { get; }
 
         /// <summary>
-        /// Get all orders.
+        /// Get all categories.
         /// </summary>
         /// <returns></returns>
-        // GET api/orders
+        // GET api/categories
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return this.Ok(await this.Orders.Get());
+            return this.Ok(await this.Categories.Get());
         }
 
         /// <summary>
-        /// Get a single order.
+        /// Get a single category.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        // GET api/orders/{GUID}
+        // GET api/categories/{GUID}
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            return this.Ok(await this.Orders.Get(id));
+            return this.Ok(await this.Categories.Get(id));
         }
 
         /// <summary>
-        /// Create a new order.
+        /// Create a new category.
         /// </summary>
-        /// <param name="order"></param>
-        // POST api/orders
+        /// <param name="category"></param>
+        // POST api/categories
         [HttpPost]
-        public void Post([FromBody] Order order)
+        public void Post([FromBody] Category category)
         {
         }
 
         /// <summary>
-        /// Update an existing order.
+        /// Update an existing category.
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="order"></param>
-        // PUT api/orders/{GUID}
+        /// <param name="category"></param>
+        // PUT api/categories/{GUID}
         [HttpPut("{id}")]
-        public void Put(Guid id, [FromBody] Order order)
+        public void Put(Guid id, [FromBody] Category category)
         {
         }
 
         /// <summary>
-        /// Cancel an existind order.
+        /// Remove an existind category.
         /// </summary>
         /// <param name="id"></param>
-        // DELETE api/orders/{GUID}
+        // DELETE api/categories/{GUID}
         [HttpDelete("{id}")]
         public void Cancel(Guid id)
         {
         }
     }
 }
-

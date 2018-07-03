@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Answer.King.Domain.Orders;
 using Answer.King.Domain.Repositories;
+using Answer.King.Domain.Repositories.Models;
+using Answer.King.Infrastructure.SeedData;
 
 namespace Answer.King.Infrastructure.Repositories
 {
@@ -23,6 +24,12 @@ namespace Answer.King.Infrastructure.Repositories
         public Task<IEnumerable<Product>> Get()
         {
             return Task.FromResult(this.Products as IEnumerable<Product>);
+        }
+
+        public Task AddOrUpdate(Product product)
+        {
+            this.Products.Add(product);
+            return Task.CompletedTask;
         }
     }
 }

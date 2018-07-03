@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Answer.King.Domain.Orders;
 using Answer.King.Domain.Repositories;
+using Answer.King.Infrastructure.SeedData;
 
 namespace Answer.King.Infrastructure.Repositories
 {

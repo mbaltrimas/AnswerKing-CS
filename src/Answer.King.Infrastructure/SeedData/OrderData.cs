@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Answer.King.Domain.Orders;
+using Answer.King.Domain.Orders.Models;
+using Answer.King.Infrastructure.Repositories;
 
-namespace Answer.King.Infrastructure.Repositories
+namespace Answer.King.Infrastructure.SeedData
 {
     internal static class OrderData
     {
@@ -21,12 +23,18 @@ namespace Answer.King.Infrastructure.Repositories
 
         private static Order OrderWithLineItems()
         {
-            var fish = ProductData.Products.Single(p => p.Id == Guid.Parse("8d9142c2-96a0-4808-b00a-c43aee40293f"));
+            var fish = ProductData.Products
+                .Where(p => p.Id == Guid.Parse("8d9142c2-96a0-4808-b00a-c43aee40293f"))
+                .Select(x => new Product(x.Id, x.Name, x.Price))
+                .SingleOrDefault();
 
             var lineItem1 = new LineItem(fish);
             lineItem1.AddQuantity(1);
 
-            var chips = ProductData.Products.Single(p => p.Id == Guid.Parse("89828e46-6cff-438f-be1a-6fa9355cfe24"));
+            var chips = ProductData.Products
+                .Where(p => p.Id == Guid.Parse("89828e46-6cff-438f-be1a-6fa9355cfe24"))
+                .Select(x => new Product(x.Id, x.Name, x.Price))
+                .SingleOrDefault(); ;
 
             var lineItem2 = new LineItem(chips);
             lineItem2.AddQuantity(2);

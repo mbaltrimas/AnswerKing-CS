@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Answer.King.Domain.Repositories;
 using Answer.King.Infrastructure.Repositories;
@@ -25,20 +26,25 @@ namespace Answer.King.Api
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddRouting(options => options.LowercaseUrls = true);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Register the Swagger generator, defining 1 or more Swagger documents
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Answer King API", Version = "v1" });
+                options.SwaggerDoc("v1", new Info { Title = "Answer King API", Version = "v1" });
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
+
+                options.IncludeXmlComments(xmlPath);
+                options.CustomSchemaIds(x => x.FullName);
             });
 
             services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,13 +55,19 @@ namespace Answer.King.Api
                 app.UseDeveloperExceptionPage();
 
                 // Enable middleware to serve generated Swagger as a JSON endpoint.
-                app.UseSwagger();
+                app.UseSwagger(options =>
+                {
+                    options.PreSerializeFilters.Add((document, request) =>
+                    {
+                        document.Paths = document.Paths.ToDictionary(p => p.Key.ToLowerInvariant(), p => p.Value);
+                    });
+                });
 
                 // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
                 // specifying the Swagger JSON endpoint.
-                app.UseSwaggerUI(c =>
+                app.UseSwaggerUI(options =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Answer King API V1");
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Answer King API V1");
                 });
             }
             else

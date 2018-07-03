@@ -5,12 +5,10 @@ using Answer.King.Domain.Repositories.Models;
 
 namespace Answer.King.Domain.Repositories
 {
-    public interface IProductRepository
+    public interface ICategoryRepository
     {
-        Task<Product> Get(Guid id);
+        Task<Category> Get(Guid id);
 
-        Task<IEnumerable<Product>> Get();
-
-        Task AddOrUpdate(Product product);
+        Task<IEnumerable<Category>> Get();
     }
 }

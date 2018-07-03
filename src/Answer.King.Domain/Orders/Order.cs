@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Answer.King.Domain.Orders.Models;
 
 namespace Answer.King.Domain.Orders
 {
@@ -48,7 +49,7 @@ namespace Answer.King.Domain.Orders
 
         public IReadOnlyCollection<LineItem> LineItems => this._LineItems as List<LineItem>;
 
-        public void AddLineItem(Guid productId, string name, string description, double price, Category category, int quantity = 1)
+        public void AddLineItem(Guid productId, string name, string description, double price, int quantity = 1)
         {
             if (this.OrderStatus != OrderStatus.Created)
             {
@@ -59,7 +60,7 @@ namespace Answer.King.Domain.Orders
 
             if (lineItem == null)
             {
-                var product = new Product(productId, name, description, category, price);
+                var product = new Product(productId, name, price);
                 lineItem = new LineItem(product);
             }
 

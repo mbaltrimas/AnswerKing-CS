@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Answer.King.Domain.Orders
+namespace Answer.King.Domain.Orders.Models
 {
     public class LineItem
     {
