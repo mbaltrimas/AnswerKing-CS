@@ -29,7 +29,7 @@ namespace Answer.King.Infrastructure.Repositories
             var chips = ProductData.Products.Single(p => p.Id == Guid.Parse("89828e46-6cff-438f-be1a-6fa9355cfe24"));
 
             var lineItem2 = new LineItem(chips);
-            lineItem1.AddQuantity(2);
+            lineItem2.AddQuantity(2);
 
             var lineItems = new List<LineItem>
             {

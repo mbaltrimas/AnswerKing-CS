@@ -16,6 +16,11 @@ namespace Answer.King.Infrastructure.Repositories
 
         private IList<Order> Orders { get; }
 
+        public Task<IEnumerable<Order>> Get()
+        {
+            return Task.FromResult(this.Orders as IEnumerable<Order>);
+        }
+
         public Task<Order> Get(Guid id)
         {
             return Task.FromResult(this.Orders.SingleOrDefault(o => o.Id == id));
