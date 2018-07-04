@@ -8,6 +8,7 @@ namespace Answer.King.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class OrdersController : ControllerBase
     {
         public OrdersController(IOrderRepository orders)

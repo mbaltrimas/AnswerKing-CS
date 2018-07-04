@@ -22,12 +22,12 @@ namespace Answer.King.Domain.Repositories.Models
 
         public Guid Id { get; }
 
-        public string Name { get; }
+        public string Name { get; set; }
 
-        public string Description { get; }
+        public string Description { get; set; }
 
-        public double Price { get; }
+        public double Price { get; set; }
 
-        public Category Category { get; }
+        public Category Category { get; set; }
     }
 }

@@ -8,6 +8,7 @@ namespace Answer.King.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class CategoriesController : ControllerBase
     {
         public CategoriesController(ICategoryRepository categories)
@@ -67,7 +68,7 @@ namespace Answer.King.Api.Controllers
         /// <param name="id"></param>
         // DELETE api/categories/{GUID}
         [HttpDelete("{id}")]
-        public void Cancel(Guid id)
+        public void Delete(Guid id)
         {
         }
     }
