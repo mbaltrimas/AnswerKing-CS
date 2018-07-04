@@ -86,7 +86,7 @@ namespace Answer.King.Domain.Orders
 
         public void CompleteOrder()
         {
-            if (this.OrderStatus != OrderStatus.Completed)
+            if (this.OrderStatus == OrderStatus.Created)
             {
                 throw new OrderLifeCycleException($"Cannot complete order - Order status {this.OrderStatus}.");
             }
