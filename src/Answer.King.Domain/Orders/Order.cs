@@ -32,7 +32,7 @@ namespace Answer.King.Domain.Orders
             this.CreatedOn = createdOn;
             this.LastUpdated = lastUpdated;
             this.OrderStatus = status;
-            this._LineItems = lineItems;
+            this._LineItems = lineItems ?? new List<LineItem>();
         }
 
         public Guid Id { get; }
@@ -49,8 +49,10 @@ namespace Answer.King.Domain.Orders
 
         public IReadOnlyCollection<LineItem> LineItems => this._LineItems as List<LineItem>;
 
-        public void AddLineItem(Guid productId, string name, string description, double price, int quantity = 1)
+        public void AddLineItem(Guid productId, double price, int quantity = 1)
         {
+            Guard.AgainstDefaultValue(nameof(productId), productId);
+
             if (this.OrderStatus != OrderStatus.Created)
             {
                 throw new OrderLifeCycleException($"Cannot add line item - Order status {this.OrderStatus}.");
@@ -60,8 +62,9 @@ namespace Answer.King.Domain.Orders
 
             if (lineItem == null)
             {
-                var product = new Product(productId, name, price);
+                var product = new Product(productId, price);
                 lineItem = new LineItem(product);
+                this._LineItems.Add(lineItem);
             }
 
             lineItem.AddQuantity(quantity);
@@ -70,6 +73,8 @@ namespace Answer.King.Domain.Orders
 
         public void RemoveLineItem(Guid productId, int quantity = 1)
         {
+            Guard.AgainstDefaultValue(nameof(productId), productId);
+
             if (this.OrderStatus != OrderStatus.Created)
             {
                 throw new OrderLifeCycleException($"Cannot remove line item - Order status {this.OrderStatus}.");
@@ -77,16 +82,25 @@ namespace Answer.King.Domain.Orders
 
             var lineItem = this._LineItems.SingleOrDefault(li => li.Product.Id == productId);
 
-            if (lineItem != null)
+            if (lineItem == null)
             {
-                lineItem.RemoveQuantity(quantity);
-                this.LastUpdated = DateTime.UtcNow;
+                return;
             }
+
+            lineItem.RemoveQuantity(quantity);
+
+            if (lineItem.Quantity == 0)
+            {
+                this._LineItems.Remove(lineItem);
+            }
+
+            this.LastUpdated = DateTime.UtcNow;
+
         }
 
         public void CompleteOrder()
         {
-            if (this.OrderStatus == OrderStatus.Created)
+            if (this.OrderStatus != OrderStatus.Created)
             {
                 throw new OrderLifeCycleException($"Cannot complete order - Order status {this.OrderStatus}.");
             }
@@ -97,7 +111,7 @@ namespace Answer.King.Domain.Orders
 
         public void CancelOrder()
         {
-            if (this.OrderStatus == OrderStatus.Cancelled)
+            if (this.OrderStatus != OrderStatus.Created)
             {
                 throw new OrderLifeCycleException($"Cannot cancel order - Order status {this.OrderStatus}.");
             }

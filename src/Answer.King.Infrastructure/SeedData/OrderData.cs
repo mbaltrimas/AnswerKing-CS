@@ -25,7 +25,7 @@ namespace Answer.King.Infrastructure.SeedData
         {
             var fish = ProductData.Products
                 .Where(p => p.Id == Guid.Parse("8d9142c2-96a0-4808-b00a-c43aee40293f"))
-                .Select(x => new Product(x.Id, x.Name, x.Price))
+                .Select(x => new Product(x.Id, x.Price))
                 .SingleOrDefault();
 
             var lineItem1 = new LineItem(fish);
@@ -33,7 +33,7 @@ namespace Answer.King.Infrastructure.SeedData
 
             var chips = ProductData.Products
                 .Where(p => p.Id == Guid.Parse("89828e46-6cff-438f-be1a-6fa9355cfe24"))
-                .Select(x => new Product(x.Id, x.Name, x.Price))
+                .Select(x => new Product(x.Id, x.Price))
                 .SingleOrDefault(); ;
 
             var lineItem2 = new LineItem(chips);

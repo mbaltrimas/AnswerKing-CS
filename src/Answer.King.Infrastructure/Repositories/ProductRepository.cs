@@ -28,7 +28,15 @@ namespace Answer.King.Infrastructure.Repositories
 
         public Task AddOrUpdate(Product product)
         {
+            var existing = this.Products.SingleOrDefault(p => p.Id == product.Id);
+
+            if (existing != null)
+            {
+                this.Products.Remove(existing);
+            }
+
             this.Products.Add(product);
+
             return Task.CompletedTask;
         }
     }
