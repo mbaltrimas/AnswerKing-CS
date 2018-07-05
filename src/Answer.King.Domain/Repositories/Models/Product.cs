@@ -1,5 +1,4 @@
 ﻿using System;
-using Answer.King.Domain.Orders;
 
 namespace Answer.King.Domain.Repositories.Models
 {
