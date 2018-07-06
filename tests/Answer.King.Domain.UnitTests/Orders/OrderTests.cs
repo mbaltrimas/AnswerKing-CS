@@ -186,9 +186,17 @@ namespace Answer.King.Domain.UnitTests.Orders
             // Arrange
             var order = new Order();
             var id = Guid.NewGuid();
+            var productName = "PRODUCT_NAME";
+            var productDescription = "PRODUCT_DESCRIPTION";
+            var category = new Category(
+                Guid.Parse("9BAC7050-D3C4-4793-A5C8-BEEAC4EA4229"),
+                "CATEGORY_NAME",
+                "CATEGORY_DESCRIPTION"
+            );
+            var quantity = 5;
             var price = 1.25;
 
-            order.AddLineItem(id, price, 5);
+            order.AddLineItem(id, productName, productDescription, price, category, quantity);
 
             // Act
             order.RemoveLineItem(id, 3);
@@ -206,9 +214,17 @@ namespace Answer.King.Domain.UnitTests.Orders
             // Arrange
             var order = new Order();
             var id = Guid.NewGuid();
+            var productName = "PRODUCT_NAME";
+            var productDescription = "PRODUCT_DESCRIPTION";
+            var category = new Category(
+                Guid.Parse("9BAC7050-D3C4-4793-A5C8-BEEAC4EA4229"),
+                "CATEGORY_NAME",
+                "CATEGORY_DESCRIPTION"
+            );
+            var quantity = 3;
             var price = 1.25;
 
-            order.AddLineItem(id, price, 3);
+            order.AddLineItem(id, productName, productDescription, price, category, quantity);
 
             // Act
             order.RemoveLineItem(id, 3);

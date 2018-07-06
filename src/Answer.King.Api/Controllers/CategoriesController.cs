@@ -9,7 +9,7 @@ using Product = Answer.King.Domain.Orders.Models.Product;
 
 namespace Answer.King.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     [ApiController]
     [Produces("application/json")]
     public class CategoriesController : ControllerBase
@@ -114,7 +114,7 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Retire(Guid id)
         {
-           try
+            try
             {
                 var category = await this.Categories.RetireCategory(id);
 

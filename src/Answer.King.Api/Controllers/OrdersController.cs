@@ -18,7 +18,6 @@ namespace Answer.King.Api.Controllers
         }
 
         private IOrderService Orders { get; }
-        
 
         /// <summary>
         /// Get all orders.
@@ -95,7 +94,6 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Put(Guid id, [FromBody] Order updateOrder)
         {
-
             try
             {
                 var order = await this.Orders.UpdateOrder(id, updateOrder);
@@ -137,4 +135,3 @@ namespace Answer.King.Api.Controllers
         }
     }
 }
-

@@ -46,6 +46,10 @@ namespace Answer.King.Domain.Inventory
             this.Retired = retired;
         }
 
+        public Category()
+        {
+        }
+
         public Guid Id { get; }
 
         public string Name { get; private set; }
