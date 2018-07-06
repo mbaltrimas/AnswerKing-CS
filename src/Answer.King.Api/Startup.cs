@@ -55,6 +55,7 @@ namespace Answer.King.Api
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IPaymentRepository, PaymentRepository>();
             services.AddSingleton<ILiteDbConnectionFactory, LiteDbConnectionFactory>();
         }
 

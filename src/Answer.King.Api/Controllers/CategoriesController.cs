@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Answer.King.Api.ViewModels;
 using Answer.King.Domain.Inventory;
 using Answer.King.Domain.Repositories;
-using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
 using Category = Answer.King.Api.ViewModels.Category;
 using Product = Answer.King.Domain.Repositories.Models.Product;

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Answer.King.Api.ViewModels;
 using Answer.King.Domain.Repositories;
-using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
 using CategoryId = Answer.King.Domain.Repositories.Models.CategoryId;
 using Product = Answer.King.Api.ViewModels.Product;

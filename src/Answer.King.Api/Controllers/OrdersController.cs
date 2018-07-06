@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Answer.King.Api.ViewModels;
-using Answer.King.Domain.Orders;
 using Answer.King.Domain.Repositories;
-using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
 using Order = Answer.King.Api.ViewModels.Order;
 using Product = Answer.King.Domain.Repositories.Models.Product;

@@ -1,0 +1,37 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Answer.King.Domain.Repositories;
+using Answer.King.Domain.Repositories.Models;
+using LiteDB;
+
+namespace Answer.King.Infrastructure.Repositories
+{
+    public class PaymentRepository : IPaymentRepository
+    {
+        public PaymentRepository(ILiteDbConnectionFactory connections)
+        {
+            var db = connections.GetConnection();
+
+            this.Collection = db.GetCollection<Payment>();
+        }
+
+        private LiteCollection<Payment> Collection { get; }
+
+
+        public Task<Payment> Get(Guid id)
+        {
+            return Task.FromResult(this.Collection.FindOne(c => c.Id == id));
+        }
+
+        public Task<IEnumerable<Payment>> Get()
+        {
+            return Task.FromResult(this.Collection.FindAll());
+        }
+
+        public Task Add(Payment payment)
+        {
+            return Task.FromResult(this.Collection.Insert(payment));
+        }
+    }
+}
