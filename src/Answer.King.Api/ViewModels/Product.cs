@@ -1,6 +1,6 @@
 ﻿namespace Answer.King.Api.ViewModels
 {
-    public class CreateProduct
+    public class Product
     {
         public string Name { get; set; }
 

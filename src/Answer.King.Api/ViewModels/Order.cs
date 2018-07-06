@@ -2,7 +2,7 @@
 
 namespace Answer.King.Api.ViewModels
 {
-    public class CreateOrder
+    public class Order
     {
         public IList<LineItem> LineItems { get; set; }
     }

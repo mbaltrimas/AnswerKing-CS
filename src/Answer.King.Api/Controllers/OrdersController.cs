@@ -7,6 +7,8 @@ using Answer.King.Domain.Orders;
 using Answer.King.Domain.Repositories;
 using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
+using Order = Answer.King.Api.ViewModels.Order;
+using Product = Answer.King.Domain.Repositories.Models.Product;
 
 namespace Answer.King.Api.Controllers
 {
@@ -34,7 +36,7 @@ namespace Answer.King.Api.Controllers
         /// <response code="200">When all the orders have been returned.</response>
         // GET api/orders
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Order>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<Domain.Orders.Order>), 200)]
         public async Task<IActionResult> Get()
         {
             return this.Ok(await this.Orders.Get());
@@ -49,7 +51,7 @@ namespace Answer.King.Api.Controllers
         /// <response code="404">When the order with the given <paramref name="id"/> does not exist</response>
         // GET api/orders/{GUID}
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Order), 200)]
+        [ProducesResponseType(typeof(Domain.Orders.Order), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -65,14 +67,14 @@ namespace Answer.King.Api.Controllers
         /// <summary>
         /// Create a new order.
         /// </summary>
-        /// <param name="createOrder"></param>
+        /// <param name="ordereOrder"></param>
         /// <response code="201">When the order has been created.</response>
         /// <response code="400">When invalid parameters are provided.</response>
         // POST api/orders
         [HttpPost]
-        [ProducesResponseType(typeof(Order), 201)]
+        [ProducesResponseType(typeof(Domain.Orders.Order), 201)]
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
-        public async Task<IActionResult> Post([FromBody] CreateOrder createOrder)
+        public async Task<IActionResult> Post([FromBody] Order createOrder)
         {
             var submittedProductIds = createOrder.LineItems.Select(l => l.Product.Id).ToList();
 
@@ -91,7 +93,7 @@ namespace Answer.King.Api.Controllers
                 return this.BadRequest(this.ModelState);
             }
 
-            var order = new Order();
+            var order = new Domain.Orders.Order();
 
             foreach (var lineItem in createOrder.LineItems)
             {
@@ -114,10 +116,10 @@ namespace Answer.King.Api.Controllers
         /// <response code="404">When the order with the given <paramref name="id"/> does not exist.</response>
         // PUT api/orders/{GUID}
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(Order), 200)]
+        [ProducesResponseType(typeof(Domain.Orders.Order), 200)]
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateOrder updateOrder)
+        public async Task<IActionResult> Put(Guid id, [FromBody] Order updateOrder)
         {
             var order = await this.Orders.Get(id);
 
@@ -139,7 +141,7 @@ namespace Answer.King.Api.Controllers
             {
                 this.ModelState.AddModelError(
                     "LineItems.ProductId",
-                    $"Product id{(invalidProducts.Count() > 1 ? "s":"")} does not exist: {string.Join(',', invalidProducts)}");
+                    $"Product id{(invalidProducts.Count > 1 ? "s":"")} does not exist: {string.Join(',', invalidProducts)}");
 
                 return this.BadRequest(this.ModelState);
             }
@@ -163,7 +165,7 @@ namespace Answer.King.Api.Controllers
         /// <response code="404">When the order with the given <paramref name="id"/> does not exist.</response>
         // DELETE api/orders/{GUID}
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Order), 200)]
+        [ProducesResponseType(typeof(Domain.Orders.Order), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Cancel(Guid id)
         {

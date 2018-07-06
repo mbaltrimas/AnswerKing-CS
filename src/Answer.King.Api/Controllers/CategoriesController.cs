@@ -7,6 +7,8 @@ using Answer.King.Domain.Inventory;
 using Answer.King.Domain.Repositories;
 using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
+using Category = Answer.King.Api.ViewModels.Category;
+using Product = Answer.King.Domain.Repositories.Models.Product;
 
 namespace Answer.King.Api.Controllers
 {
@@ -32,7 +34,7 @@ namespace Answer.King.Api.Controllers
         /// <response code="200">When all the categories have been returned.</response>
         // GET api/categories
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Category>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<Domain.Inventory.Category>), 200)]
         public async Task<IActionResult> Get()
         {
             return this.Ok(await this.Categories.Get());
@@ -47,7 +49,7 @@ namespace Answer.King.Api.Controllers
         /// <response code="404">When the category with the given <paramref name="id"/> does not exist</response>
         // GET api/categories/{GUID}
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Category), 200)]
+        [ProducesResponseType(typeof(Domain.Inventory.Category), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -68,11 +70,11 @@ namespace Answer.King.Api.Controllers
         /// <response code="400">When invalid parameters are provided.</response>
         // POST api/categories
         [HttpPost]
-        [ProducesResponseType(typeof(Category), 201)]
+        [ProducesResponseType(typeof(Domain.Inventory.Category), 201)]
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
-        public async Task<IActionResult> Post([FromBody] CreateCategory createCategory)
+        public async Task<IActionResult> Post([FromBody] Category createCategory)
         {
-            var category = new Category(createCategory.Name, createCategory.Description);
+            var category = new Domain.Inventory.Category(createCategory.Name, createCategory.Description);
 
             await this.Categories.Save(category);
 
@@ -89,10 +91,10 @@ namespace Answer.King.Api.Controllers
         /// <response code="404">When the category with the given <paramref name="id"/> does not exist.</response>
         // PUT api/categories/{GUID}
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(Category), 200)]
+        [ProducesResponseType(typeof(Domain.Inventory.Category), 200)]
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateCategory updateCategory)
+        public async Task<IActionResult> Put(Guid id, [FromBody] Category updateCategory)
         {
             var category = await this.Categories.Get(id);
             if (category == null)
@@ -116,7 +118,7 @@ namespace Answer.King.Api.Controllers
         /// <response code="404">When the category with the given <paramref name="id"/> does not exist.</response>
         // DELETE api/categories/{GUID}
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Category), 200)]
+        [ProducesResponseType(typeof(Domain.Inventory.Category), 200)]
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Retire(Guid id)

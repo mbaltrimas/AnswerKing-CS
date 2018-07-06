@@ -3,13 +3,10 @@ using FluentValidation;
 
 namespace Answer.King.Api.Validators
 {
-    public class UpdateProductValidator : AbstractValidator<UpdateProduct>
+    public class ProductValidator : AbstractValidator<Product>
     {
-        public UpdateProductValidator()
+        public ProductValidator()
         {
-            this.RuleFor(p => p.Id)
-                .NotEmpty();
-
             this.RuleFor(p => p.Name)
                 .NotNullOrWhiteSpace();
 
