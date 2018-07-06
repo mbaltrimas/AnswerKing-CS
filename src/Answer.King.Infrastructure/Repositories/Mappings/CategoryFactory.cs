@@ -33,7 +33,18 @@ namespace Answer.King.Infrastructure.Repositories.Mappings
                 retired
             };
 
-            return (Category)ctor?.Invoke(parameters);
+            /* invoking a private constructor will wrap up any exception into a
+             * TargetInvocationException so here I unwrap it
+             */
+            try
+            {
+                return (Category) ctor?.Invoke(parameters);
+            }
+            catch (TargetInvocationException ex)
+            {
+                var exception = ex.InnerException ?? ex;
+                throw exception;
+            }
         }
     }
 }

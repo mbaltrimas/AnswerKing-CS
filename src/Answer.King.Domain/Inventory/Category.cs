@@ -8,9 +8,6 @@ namespace Answer.King.Domain.Inventory
     // Todo: look at custom deserialisation: https://stackoverflow.com/questions/42336751/custom-deserialization
     public class Category : IAggregateRoot
     {
-        // this is so the document database can deserialise
-        private Category() {}
-
         public Category(string name, string description)
         {
             Guard.AgainstNullOrEmptyArgument(nameof(name), name);

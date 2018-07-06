@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Answer.King.Api.ViewModels;
 using Answer.King.Domain.Orders;
 using Answer.King.Domain.Repositories;
+using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Answer.King.Api.Controllers
@@ -33,6 +34,7 @@ namespace Answer.King.Api.Controllers
         /// <response code="200">When all the orders have been returned.</response>
         // GET api/orders
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Order>), 200)]
         public async Task<IActionResult> Get()
         {
             return this.Ok(await this.Orders.Get());
@@ -51,7 +53,13 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(Guid id)
         {
-            return this.Ok(await this.Orders.Get(id));
+            var order = await this.Orders.Get(id);
+            if (order == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.Ok();
         }
 
         /// <summary>
@@ -151,10 +159,58 @@ namespace Answer.King.Api.Controllers
         /// Cancel an existind order.
         /// </summary>
         /// <param name="id"></param>
+        /// <response code="200">When the order has been cancelled.</response>
+        /// <response code="404">When the order with the given <paramref name="id"/> does not exist.</response>
         // DELETE api/orders/{GUID}
         [HttpDelete("{id}")]
-        public void Cancel(Guid id)
+        [ProducesResponseType(typeof(Order), 200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> Cancel(Guid id)
         {
+            var order = await this.Orders.Get(id);
+
+            if (order == null)
+            {
+                return this.NotFound();
+            }
+
+            try
+            {
+                order.CancelOrder();
+                await this.Orders.Save(order);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return this.Ok(order);
+        }
+
+        /// <summary>
+        /// Get all products in an order.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <response code="200">When all the products have been returned.</response>
+        /// <response code="404">When the order with the given <paramref name="id"/> does not exist.</response>
+        // GET api/orders/{GUID}//products
+        [HttpGet("{id}/products")]
+        [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetProducts(Guid id)
+        {
+            var order = await this.Orders.Get(id);
+
+            if (order == null)
+            {
+                return this.NotFound();
+            }
+
+            var productIds = order.LineItems.Select(li => li.Product.Id);
+
+            var products = await this.Products.Get(productIds);
+
+            return this.Ok(products);
         }
     }
 }

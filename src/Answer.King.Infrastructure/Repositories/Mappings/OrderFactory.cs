@@ -22,7 +22,15 @@ namespace Answer.King.Infrastructure.Repositories.Mappings
 
             var parameters = new object[] {id, createdOn, lastUpdated, status, lineItems};
 
-            return (Order)ctor?.Invoke(parameters);
+            try
+            {
+                return (Order) ctor?.Invoke(parameters);
+            }
+            catch (TargetInvocationException ex)
+            {
+                var exception = ex.InnerException ?? ex;
+                throw exception;
+            }
         }
     }
 }

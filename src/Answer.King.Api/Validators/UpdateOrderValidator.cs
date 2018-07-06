@@ -7,10 +7,10 @@ namespace Answer.King.Api.Validators
     {
         public UpdateOrderValidator()
         {
-            this.RuleFor(c => c.Id)
+            this.RuleFor(o => o.Id)
                 .NotEmpty();
 
-            this.RuleFor(c => c.LineItems)
+            this.RuleFor(o => o.LineItems)
                 .NotEmpty()
                 .SetCollectionValidator(new LineItemValidator());
         }

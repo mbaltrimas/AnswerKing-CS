@@ -5,44 +5,60 @@ using System.Threading.Tasks;
 using Answer.King.Domain.Repositories;
 using Answer.King.Domain.Repositories.Models;
 using Answer.King.Infrastructure.SeedData;
+using LiteDB;
 
 namespace Answer.King.Infrastructure.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        public ProductRepository()
+        public ProductRepository(ILiteDbConnectionFactory connections)
         {
-            this.Products = ProductData.Products;
+            var db = connections.GetConnection();
+
+            this.Collection = db.GetCollection<Product>();
+
+            this.SeedData();
         }
-        private IList<Product> Products { get; }
+
+        private LiteCollection<Product> Collection { get; }
+
 
         public Task<Product> Get(Guid id)
         {
-            return Task.FromResult(this.Products.SingleOrDefault(p => p.Id == id));
+            return Task.FromResult(this.Collection.FindOne(c => c.Id == id));
         }
 
         public Task<IEnumerable<Product>> Get()
         {
-            return Task.FromResult(this.Products as IEnumerable<Product>);
+            return Task.FromResult(this.Collection.FindAll());
         }
 
         public Task<IEnumerable<Product>> Get(IEnumerable<Guid> ids)
         {
-            return Task.FromResult(this.Products.Where(p => ids.Contains(p.Id)));
+            return Task.FromResult(this.Collection.Find(p => ids.Contains(p.Id)));
         }
 
         public Task AddOrUpdate(Product product)
         {
-            var existing = this.Products.SingleOrDefault(p => p.Id == product.Id);
+            return Task.FromResult(this.Collection.Upsert(product));
+        }
 
-            if (existing != null)
+        private void SeedData()
+        {
+            if (DataSeeded)
             {
-                this.Products.Remove(existing);
+                return;
             }
 
-            this.Products.Add(product);
+            var none = this.Collection.Count() < 1;
+            if (none)
+            {
+                this.Collection.InsertBulk(ProductData.Products);
+            }
 
-            return Task.CompletedTask;
+            DataSeeded = true;
         }
+
+        private static bool DataSeeded { get; set; }
     }
 }

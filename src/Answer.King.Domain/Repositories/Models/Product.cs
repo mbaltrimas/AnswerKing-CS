@@ -4,19 +4,34 @@ namespace Answer.King.Domain.Repositories.Models
 {
     public class Product
     {
-        public Product(Guid id, string name, string description, double price, Category category)
+        public Product(string name, string description, double price, CategoryId category)
+        {
+            Guard.AgainstNullOrEmptyArgument(nameof(name), name);
+            Guard.AgainstNullOrEmptyArgument(nameof(description), description);
+            Guard.AgainstNegativeValue(nameof(price), price);
+            Guard.AgainstNullArgument(nameof(category), category);
+
+            this.Id = Guid.NewGuid();
+            this.Name = name;
+            this.Description = description;
+            this.Price = price;
+            this.Category = category;
+        }
+
+        private Product(Guid id, string name, string description, double price, CategoryId category, bool retired)
         {
             Guard.AgainstDefaultValue(nameof(id), id);
             Guard.AgainstNullOrEmptyArgument(nameof(name), name);
             Guard.AgainstNullOrEmptyArgument(nameof(description), description);
-            Guard.AgainstNullArgument(nameof(category), category);
             Guard.AgainstNegativeValue(nameof(price), price);
+            Guard.AgainstNullArgument(nameof(category), category);
 
             this.Id = id;
             this.Name = name;
             this.Description = description;
-            this.Category = category;
             this.Price = price;
+            this.Category = category;
+            this.Retired = retired;
         }
 
         public Guid Id { get; }
@@ -27,6 +42,8 @@ namespace Answer.King.Domain.Repositories.Models
 
         public double Price { get; set; }
 
-        public Category Category { get; set; }
+        public CategoryId Category { get; set; }
+
+        public bool Retired { get; set; }
     }
 }

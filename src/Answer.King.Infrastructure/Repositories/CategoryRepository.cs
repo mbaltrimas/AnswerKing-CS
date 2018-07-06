@@ -21,7 +21,7 @@ namespace Answer.King.Infrastructure.Repositories
             this.SeedData();
         }
 
-        public LiteCollection<Category> Collection { get; }
+        private LiteCollection<Category> Collection { get; }
 
 
         public Task<IEnumerable<Category>> Get()
@@ -52,7 +52,7 @@ namespace Answer.King.Infrastructure.Repositories
                 return;
             }
 
-            var none = this.Collection.Count() <= 0;
+            var none = this.Collection.Count() < 1;
             if (none)
             {
                 this.Collection.InsertBulk(CategoryData.Categories);

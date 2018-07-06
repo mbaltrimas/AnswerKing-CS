@@ -7,11 +7,11 @@ namespace Answer.King.Api.Validators
     {
         public LineItemValidator()
         {
-            this.RuleFor(c => c.Product)
+            this.RuleFor(li => li.Product)
                 .NotNull()
                 .SetValidator(new ProductIdValidator());
 
-            this.RuleFor(c => c.Quantity)
+            this.RuleFor(li => li.Quantity)
                 .GreaterThanOrEqualTo(0);
         }
     }
@@ -20,7 +20,7 @@ namespace Answer.King.Api.Validators
     {
         public ProductIdValidator()
         {
-            this.RuleFor(c => c.Id)
+            this.RuleFor(p => p.Id)
                 .NotEmpty();
         }
     }

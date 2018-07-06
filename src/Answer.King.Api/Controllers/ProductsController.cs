@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Answer.King.Api.ViewModels;
-using Answer.King.Domain.Inventory.Models;
 using Answer.King.Domain.Repositories;
 using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
+using CategoryId = Answer.King.Domain.Repositories.Models.CategoryId;
 using ProductId = Answer.King.Domain.Inventory.Models.ProductId;
 
 namespace Answer.King.Api.Controllers
@@ -81,11 +81,10 @@ namespace Answer.King.Api.Controllers
             }
 
             var product = new Product(
-                Guid.NewGuid(),
                 createProduct.Name,
                 createProduct.Description,
                 createProduct.Price,
-                new Category(category.Id, category.Name));
+                new CategoryId(category.Id));
 
             await this.Products.AddOrUpdate(product);
 
@@ -131,7 +130,7 @@ namespace Answer.King.Api.Controllers
             product.Name = updateProduct.Name;
             product.Description = updateProduct.Description;
             product.Price = updateProduct.Price;
-            product.Category = new Category(category.Id, category.Name);
+            product.Category = new CategoryId(category.Id);
 
             await this.Products.AddOrUpdate(product);
 
@@ -142,10 +141,33 @@ namespace Answer.King.Api.Controllers
         /// Remove an existind product.
         /// </summary>
         /// <param name="id"></param>
+        /// <response code="200">When the product has been removed.</response>
+        /// <response code="404">When the product with the given <paramref name="id"/> does not exist.</response>
         // DELETE api/products/{GUID}
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        [ProducesResponseType(typeof(Product), 200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> Retire(Guid id)
         {
+            var product = await this.Products.Get(id);
+
+            if (product == null)
+            {
+                return this.NotFound();
+            }
+
+            var category = await this.Categories.GetByProductId(id);
+            if (category != null)
+            {
+                category.RemoveProduct(new ProductId(id));
+                await this.Categories.Save(category);
+            }
+            
+            product.Retired = true;
+
+            await this.Products.AddOrUpdate(product);
+
+            return this.Ok(product);
         }
     }
 }

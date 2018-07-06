@@ -1,6 +1,7 @@
 ﻿using Answer.King.Domain.Repositories.Models;
 using Answer.King.Test.Common.CustomTraits;
 using System;
+using Answer.King.Infrastructure.Repositories.Mappings;
 using Xunit;
 
 namespace Answer.King.Domain.UnitTests.Repositories.Models
@@ -17,15 +18,17 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             var productDescription = "Product Description";
             var category = this.GetCategory();
             var price = 142;
+            var retired = false;
 
             // Act / Assert
 
-            Assert.Throws<Guard.DefaultValueException>(() => new Product(
+            Assert.Throws<Guard.DefaultValueException>(() => ProductFactory.CreateProduct(
                 id,
                 productName,
                 productDescription,
                 price,
-                category)
+                category,
+                retired)
             );
         }
 
@@ -38,14 +41,16 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             var productDescription = "Product Description";
             var category = this.GetCategory();
             var price = 142;
+            var retired = false;
 
             // Act / Assert
-            Assert.Throws<ArgumentNullException>(() => new Product(
+            Assert.Throws<ArgumentNullException>(() => ProductFactory.CreateProduct(
                 id,
                 productName,
                 productDescription,
                 price,
-                category)
+                category,
+                retired)
             );
         }
 
@@ -58,14 +63,16 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             var productDescription = "Product Description";
             var category = this.GetCategory();
             var price = 142;
+            var retired = false;
 
             // Act / Assert
-            Assert.Throws<Guard.EmptyStringException>(() => new Product(
+            Assert.Throws<Guard.EmptyStringException>(() => ProductFactory.CreateProduct(
                 id,
                 productName,
                 productDescription,
                 price,
-                category)
+                category,
+                retired)
            );
         }
 
@@ -78,14 +85,16 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             var productDescription = (null as string);
             var category = this.GetCategory();
             var price = 142;
+            var retired = false;
 
             // Act / Assert
-            Assert.Throws<ArgumentNullException>(() => new Product(
+            Assert.Throws<ArgumentNullException>(() => ProductFactory.CreateProduct(
                 id,
                 productName,
                 productDescription,
                 price,
-                category)
+                category,
+                retired)
             );
         }
 
@@ -98,14 +107,16 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             var productDescription = "";
             var category = this.GetCategory();
             var price = 142;
+            var retired = false;
 
             // Act / Assert
-            Assert.Throws<Guard.EmptyStringException>(() => new Product(
+            Assert.Throws<Guard.EmptyStringException>(() => ProductFactory.CreateProduct(
                 id,
                 productName,
                 productDescription,
                 price,
-                category)
+                category,
+                retired)
             );
         }
 
@@ -116,16 +127,18 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             var id = Guid.NewGuid();
             var productName = "Product Name";
             var productDescription = "Product Description";
-            var category = (null as Category);
+            var category = (null as CategoryId);
             var price = 142;
+            var retired = false;
 
             // Act / Assert
-            Assert.Throws<ArgumentNullException>(() => new Product(
+            Assert.Throws<ArgumentNullException>(() => ProductFactory.CreateProduct(
                 id,
                 productName,
                 productDescription,
                 price,
-                category)
+                category,
+                retired)
             );
         }
 
@@ -138,22 +151,23 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             var productDescription = "Product Description";
             var category = this.GetCategory();
             var price = -1;
+            var retired = false;
 
             // Act Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Product(
+            Assert.Throws<ArgumentOutOfRangeException>(() => ProductFactory.CreateProduct(
                 id,
                 productName,
                 productDescription,
                 price,
-                category)
+                category,
+                retired)
             );
         }
 
         #region Helpers
 
-        private Category GetCategory() => new Category(
-            Guid.NewGuid(),
-            "Category Name"
+        private CategoryId GetCategory() => new CategoryId(
+            Guid.NewGuid()
         );
 
         #endregion Helpers

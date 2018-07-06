@@ -20,7 +20,7 @@ namespace Answer.King.Infrastructure.Repositories
             this.SeedData();
         }
 
-        public LiteCollection<Order> Collection { get; }
+        private LiteCollection<Order> Collection { get; }
 
         public Task<IEnumerable<Order>> Get()
         {
@@ -44,7 +44,7 @@ namespace Answer.King.Infrastructure.Repositories
                 return;
             }
 
-            var none = this.Collection.Count() <= 0;
+            var none = this.Collection.Count() < 1;
             if (none)
             {
                 this.Collection.InsertBulk(OrderData.Orders);

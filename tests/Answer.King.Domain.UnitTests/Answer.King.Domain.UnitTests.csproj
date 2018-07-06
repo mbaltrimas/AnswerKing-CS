@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Answer.King.Infrastructure\Answer.King.Infrastructure.csproj" />
     <ProjectReference Include="..\Answer.King.Test.Common\Answer.King.Test.Common.csproj" />
     <ProjectReference Include="..\..\src\Answer.King.Domain\Answer.King.Domain.csproj" />
   </ItemGroup>

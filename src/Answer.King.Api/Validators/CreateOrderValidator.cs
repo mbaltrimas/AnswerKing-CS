@@ -7,7 +7,7 @@ namespace Answer.King.Api.Validators
     {
         public CreateOrderValidator()
         {
-            this.RuleFor(c => c.LineItems)
+            this.RuleFor(o => o.LineItems)
                 .NotEmpty()
                 .SetCollectionValidator(new LineItemValidator());
         }

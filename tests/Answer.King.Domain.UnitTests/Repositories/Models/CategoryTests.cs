@@ -16,7 +16,7 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             var categoryName = "Category Name";
 
             // Act / Assert
-            Assert.Throws<Guard.DefaultValueException>(() => new Category(id, categoryName));
+            Assert.Throws<Guard.DefaultValueException>(() => new CategoryId(id));
         }
 
         [Fact]
@@ -26,7 +26,7 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             var id = Guid.Parse("5E2B0450-6652-490F-93A0-1CA7C2B82B66");
 
             // Act / Assert
-            Assert.Throws<ArgumentNullException>(() => new Category(id, null));
+            Assert.Throws<ArgumentNullException>(() => new CategoryId(id));
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             var categoryName = "";
 
             // Act / Assert
-            Assert.Throws<Guard.EmptyStringException>(() => new Category(id, categoryName));
+            Assert.Throws<Guard.EmptyStringException>(() => new CategoryId(id));
         }
     }
 }
