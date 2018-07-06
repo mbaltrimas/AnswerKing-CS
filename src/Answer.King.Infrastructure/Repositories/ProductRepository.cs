@@ -26,6 +26,11 @@ namespace Answer.King.Infrastructure.Repositories
             return Task.FromResult(this.Products as IEnumerable<Product>);
         }
 
+        public Task<IEnumerable<Product>> Get(IEnumerable<Guid> ids)
+        {
+            return Task.FromResult(this.Products.Where(p => ids.Contains(p.Id)));
+        }
+
         public Task AddOrUpdate(Product product)
         {
             var existing = this.Products.SingleOrDefault(p => p.Id == product.Id);

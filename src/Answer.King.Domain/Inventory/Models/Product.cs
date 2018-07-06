@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Answer.King.Domain.Inventory.Models
 {
-    public class Product
+    public class ProductId
     {
-        public Product(Guid id)
+        public ProductId(Guid id)
         {
             Guard.AgainstDefaultValue(nameof(id), id);
 

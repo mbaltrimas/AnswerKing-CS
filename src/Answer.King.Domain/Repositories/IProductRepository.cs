@@ -11,6 +11,8 @@ namespace Answer.King.Domain.Repositories
 
         Task<IEnumerable<Product>> Get();
 
+        Task<IEnumerable<Product>> Get(IEnumerable<Guid> ids);
+
         Task AddOrUpdate(Product product);
     }
 }

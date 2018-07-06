@@ -14,10 +14,9 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             // Arrange
             var id = default(Guid);
             var categoryName = "Category Name";
-            var categoryDescription = "Category Description";
 
             // Act / Assert
-            Assert.Throws<Guard.DefaultValueException>(() => new Category(id, categoryName, categoryDescription));
+            Assert.Throws<Guard.DefaultValueException>(() => new Category(id, categoryName));
         }
 
         [Fact]
@@ -25,11 +24,9 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
         {
             // Arrange
             var id = Guid.Parse("5E2B0450-6652-490F-93A0-1CA7C2B82B66");
-            var categoryName = (null as string);
-            var categoryDescription = "Category Description";
 
             // Act / Assert
-            Assert.Throws<ArgumentNullException>(() => new Category(id, categoryName, categoryDescription));
+            Assert.Throws<ArgumentNullException>(() => new Category(id, null));
         }
 
         [Fact]
@@ -38,34 +35,9 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             // Arrange
             var id = Guid.Parse("5E2B0450-6652-490F-93A0-1CA7C2B82B66");
             var categoryName = "";
-            var categoryDescription = "Category Description";
 
             // Act / Assert
-            Assert.Throws<Guard.EmptyStringException>(() => new Category(id, categoryName, categoryDescription));
-        }
-
-        [Fact]
-        public void Category_InitWithNullGuid_ThrowsArgumentNullException()
-        {
-            // Arrange
-            var id = Guid.Parse("5E2B0450-6652-490F-93A0-1CA7C2B82B66");
-            var categoryName = "Category Description";
-            var categoryDescription = (null as string);
-
-            // Act / Assert
-            Assert.Throws<ArgumentNullException>(() => new Category(id, categoryName, categoryDescription));
-        }
-
-        [Fact]
-        public void Category_InitWithEmptyStringDescription_ThrowsEmptyStringException()
-        {
-            // Arrange
-            var id = Guid.Parse("5E2B0450-6652-490F-93A0-1CA7C2B82B66");
-            var categoryName = "Category Description";
-            var categoryDescription = "";
-
-            // Act / Assert
-            Assert.Throws<Guard.EmptyStringException>(() => new Category(id, categoryName, categoryDescription));
+            Assert.Throws<Guard.EmptyStringException>(() => new Category(id, categoryName));
         }
     }
 }

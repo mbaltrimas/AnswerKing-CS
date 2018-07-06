@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Answer.King.Domain.Orders;
 using Answer.King.Domain.Orders.Models;
-using Answer.King.Infrastructure.Repositories;
+using Answer.King.Infrastructure.Repositories.Mappings;
 
 namespace Answer.King.Infrastructure.SeedData
 {

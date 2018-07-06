@@ -14,13 +14,19 @@ namespace Answer.King.Infrastructure.SeedData
                 "Fish",
                 "Delicious and satesfying.",
                 5.99,
-                CategoryData.Categories.SingleOrDefault(c => c.Id == Guid.Parse("0002015c-1997-4732-a2de-e526323e6146"))),
+                Category(Guid.Parse("0002015c-1997-4732-a2de-e526323e6146"))),
             new Product(
                 Guid.Parse("89828e46-6cff-438f-be1a-6fa9355cfe24"),
                 "Chips",
                 "Nothing More to say.",
                 2.99,
-                CategoryData.Categories.SingleOrDefault(c => c.Id == Guid.Parse("e32701f8-d644-4d5d-bd52-2a31fdaba3df")))
+                Category(Guid.Parse("e32701f8-d644-4d5d-bd52-2a31fdaba3df")))
         };
+
+        private static Category Category(Guid id)
+        {
+            return CategoryData.Categories.Where(c => c.Id == id)
+                               .Select(x => new Category(x.Id, x.Name)).SingleOrDefault();
+        }
     }
 }

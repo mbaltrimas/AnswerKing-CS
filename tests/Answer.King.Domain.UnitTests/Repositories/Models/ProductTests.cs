@@ -153,8 +153,7 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
 
         private Category GetCategory() => new Category(
             Guid.NewGuid(),
-            "Category Name",
-            "Category Description"
+            "Category Name"
         );
 
         #endregion Helpers

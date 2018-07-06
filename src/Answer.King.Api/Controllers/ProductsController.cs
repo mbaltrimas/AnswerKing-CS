@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Answer.King.Api.ViewModels;
+using Answer.King.Domain.Inventory.Models;
 using Answer.King.Domain.Repositories;
 using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
+using ProductId = Answer.King.Domain.Inventory.Models.ProductId;
 
 namespace Answer.King.Api.Controllers
 {
@@ -26,7 +28,7 @@ namespace Answer.King.Api.Controllers
         /// Get all products.
         /// </summary>
         /// <returns></returns>
-        /// /// <response code="200">When all the products have been returned.</response>
+        /// <response code="200">When all the products have been returned.</response>
         // GET api/products
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
@@ -83,7 +85,7 @@ namespace Answer.King.Api.Controllers
                 createProduct.Name,
                 createProduct.Description,
                 createProduct.Price,
-                category);
+                new Category(category.Id, category.Name));
 
             await this.Products.AddOrUpdate(product);
 
@@ -112,6 +114,10 @@ namespace Answer.King.Api.Controllers
                 return this.NotFound();
             }
 
+            var oldCategory = await this.Categories.GetByProductId(id);
+
+            oldCategory?.RemoveProduct(new ProductId(id));
+
             var category = await this.Categories.Get(updateProduct.Category.Id);
 
             if (category == null)
@@ -120,10 +126,12 @@ namespace Answer.King.Api.Controllers
                 return this.BadRequest(this.ModelState);
             }
 
+            category.AddProduct(new ProductId(id));
+
             product.Name = updateProduct.Name;
             product.Description = updateProduct.Description;
             product.Price = updateProduct.Price;
-            product.Category = category;
+            product.Category = new Category(category.Id, category.Name);
 
             await this.Products.AddOrUpdate(product);
 

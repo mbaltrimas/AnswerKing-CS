@@ -1,3 +1,6 @@
+# LiteDb database file
+*.db
+
 # Visual Studio Code workspace settings
 .vscode/
 

@@ -3,7 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Answer.King.Domain.Repositories;
+using Answer.King.Infrastructure;
+using Answer.King.Infrastructure.Extensions.DependancyInjection;
 using Answer.King.Infrastructure.Repositories;
+using Answer.King.Infrastructure.Repositories.Mappings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +36,9 @@ namespace Answer.King.Api
                 .AddFluentValidation(
                     fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
+            services.ConfigureEntityMapping(options =>
+                options.RegisterEntityMappingsFromAssemblyContaining<IEntityMapping>());
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(options =>
             {
@@ -49,6 +55,7 @@ namespace Answer.King.Api
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddSingleton<ILiteDbConnectionFactory, LiteDbConnectionFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

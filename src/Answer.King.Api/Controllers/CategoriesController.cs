@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Answer.King.Api.ViewModels;
+using Answer.King.Domain.Inventory;
 using Answer.King.Domain.Repositories;
-using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Answer.King.Api.Controllers
@@ -44,11 +45,16 @@ namespace Answer.King.Api.Controllers
         /// <summary>
         /// Create a new category.
         /// </summary>
-        /// <param name="category"></param>
+        /// <param name="createCategory"></param>
         // POST api/categories
         [HttpPost]
-        public void Post([FromBody] Category category)
+        public async Task<IActionResult> Post([FromBody] CreateCategory createCategory)
         {
+            var category = new Category(createCategory.Name, createCategory.Description);
+
+            await this.Categories.Save(category);
+
+            return this.CreatedAtAction(nameof(Get), new { category.Id }, category);
         }
 
         /// <summary>

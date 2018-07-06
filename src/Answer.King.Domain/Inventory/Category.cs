@@ -8,6 +8,9 @@ namespace Answer.King.Domain.Inventory
     // Todo: look at custom deserialisation: https://stackoverflow.com/questions/42336751/custom-deserialization
     public class Category : IAggregateRoot
     {
+        // this is so the document database can deserialise
+        private Category() {}
+
         public Category(string name, string description)
         {
             Guard.AgainstNullOrEmptyArgument(nameof(name), name);
@@ -17,7 +20,7 @@ namespace Answer.King.Domain.Inventory
             this.Name = name;
             this.Description = description;
             this.LastUpdated = this.CreatedOn = DateTime.UtcNow;
-            this._Products = new List<Product>();
+            this._Products = new List<ProductId>();
             this.Retired = false;
         }
 
@@ -28,7 +31,7 @@ namespace Answer.King.Domain.Inventory
             string description,
             DateTime createdOn,
             DateTime lastUpdated,
-            IList<Product> products,
+            IList<ProductId> products,
             bool retired)
         {
             Guard.AgainstDefaultValue(nameof(id), id);
@@ -42,7 +45,7 @@ namespace Answer.King.Domain.Inventory
             this.Description = description;
             this.CreatedOn = createdOn;
             this.LastUpdated = lastUpdated;
-            this._Products = products ?? new List<Product>();
+            this._Products = products ?? new List<ProductId>();
             this.Retired = retired;
         }
 
@@ -56,9 +59,9 @@ namespace Answer.King.Domain.Inventory
 
         public DateTime LastUpdated { get; private set; }
 
-        private IList<Product> _Products { get; }
+        private IList<ProductId> _Products { get; }
 
-        public IReadOnlyCollection<Product> Products => this._Products as List<Product>;
+        public IReadOnlyCollection<ProductId> Products => this._Products as List<ProductId>;
 
         public bool Retired { get; private set; }
 
@@ -72,33 +75,33 @@ namespace Answer.King.Domain.Inventory
             this.LastUpdated = DateTime.UtcNow;
         }
 
-        public void AddProduct(Product product)
+        public void AddProduct(ProductId productId)
         {
             if (this.Retired)
             {
                 throw new CategoryLifecycleException("Cannot add product to retired catgory.");
             }
 
-            var exists = this._Products.Any(p => p.Id == product.Id);
+            var exists = this._Products.Any(p => p.Id == productId.Id);
 
             if (exists)
             {
                 return;
             }
 
-            this._Products.Add(product);
+            this._Products.Add(productId);
 
             this.LastUpdated = DateTime.UtcNow;
         }
 
-        public void RemoveProduct(Product product)
+        public void RemoveProduct(ProductId productId)
         {
             if (this.Retired)
             {
                 throw new CategoryLifecycleException("Cannot remove product from retired catgory.");
             }
 
-            var existing = this._Products.SingleOrDefault(p => p.Id == product.Id);
+            var existing = this._Products.SingleOrDefault(p => p.Id == productId.Id);
 
             if (existing == null)
             {
