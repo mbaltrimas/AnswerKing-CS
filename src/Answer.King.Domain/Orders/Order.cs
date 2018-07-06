@@ -89,7 +89,7 @@ namespace Answer.King.Domain.Orders
 
             lineItem.RemoveQuantity(quantity);
 
-            if (lineItem.Quantity == 0)
+            if (lineItem.Quantity <= 0)
             {
                 this._LineItems.Remove(lineItem);
             }

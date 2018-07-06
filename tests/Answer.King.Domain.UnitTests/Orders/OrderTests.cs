@@ -165,6 +165,61 @@ namespace Answer.King.Domain.UnitTests.Orders
                 order.RemoveLineItem(id, quantity));
         }
 
+        [Fact]
+        public void RemoveLineItem_LineItemDoesNotExistInOrder_DoesNotAttemptToRemoveFromOrder()
+        {
+            // Arrange
+            var order = new Order();
+            var id = Guid.NewGuid();
+            var quantity = 3;
+
+            // Act
+            order.RemoveLineItem(id, quantity);
+
+            // Assert
+            Assert.Empty(order.LineItems);
+        }
+
+        [Fact]
+        public void RemoveLineItem_LineItemExistsInOrder_DecrementCorrectQuantityValue()
+        {
+            // Arrange
+            var order = new Order();
+            var id = Guid.NewGuid();
+            var price = 1.25;
+
+            order.AddLineItem(id, price, 5);
+
+            // Act
+            order.RemoveLineItem(id, 3);
+
+            var lineItem = order.LineItems.FirstOrDefault();
+
+            // Assert
+            Assert.NotNull(lineItem);
+            Assert.Equal(2, lineItem.Quantity);
+        }
+
+        [Fact]
+        public void RemoveLineItem_LineItemExistsInOrder_RemovedFromOrderIfQuantityGteCurrent()
+        {
+            // Arrange
+            var order = new Order();
+            var id = Guid.NewGuid();
+            var price = 1.25;
+
+            order.AddLineItem(id, price, 3);
+
+            // Act
+            order.RemoveLineItem(id, 3);
+
+            var lineItem = order.LineItems.FirstOrDefault();
+
+            // Assert
+            Assert.Null(lineItem);
+            Assert.Equal(0, order.LineItems.Count);
+        }
+
         #endregion RemoveLineItem
 
         #region Helpers
