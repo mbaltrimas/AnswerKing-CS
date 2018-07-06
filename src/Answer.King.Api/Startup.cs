@@ -79,6 +79,7 @@ namespace Answer.King.Api
                 app.UseSwaggerUI(options =>
                 {
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Answer King API V1");
+                    options.RoutePrefix = string.Empty;
                 });
             }
             else

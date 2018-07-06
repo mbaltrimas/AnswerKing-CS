@@ -59,7 +59,7 @@ namespace Answer.King.Api.Controllers
                 return this.NotFound();
             }
 
-            return this.Ok();
+            return this.Ok(order);
         }
 
         /// <summary>
