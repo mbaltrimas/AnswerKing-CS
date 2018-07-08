@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Answer.King.Api.Validators
 {
-    public class PaymentValidator : AbstractValidator<Payment>
+    public class MakePaymentValidator : AbstractValidator<MakePayment>
     {
-        public PaymentValidator()
+        public MakePaymentValidator()
         {
             this.RuleFor(c => c.Amount)
                 .GreaterThanOrEqualTo(0.00);

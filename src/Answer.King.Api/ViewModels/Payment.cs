@@ -1,8 +1,9 @@
 ﻿using System;
+using Answer.King.Domain;
 
 namespace Answer.King.Api.ViewModels
 {
-    public class Payment
+    public class MakePayment
     {
         public double Amount { get; set; }
 

@@ -108,10 +108,10 @@ namespace Answer.King.Api.Controllers
         }
 
         /// <summary>
-        /// Remove an existind category.
+        /// Retire an existing category.
         /// </summary>
         /// <param name="id"></param>
-        /// <response code="200">When the category has been deleted.</response>
+        /// <response code="200">When the category has been retired.</response>
         /// <response code="400">When invalid parameters are provided.</response>
         /// <response code="404">When the category with the given <paramref name="id"/> does not exist.</response>
         // DELETE api/categories/{GUID}
@@ -140,7 +140,7 @@ namespace Answer.King.Api.Controllers
                 // ignored
                 this.ModelState.AddModelError(
                     "Products",
-                    $"Cannot remove category whilst there are still products assigned. {string.Join(',', category.Products.Select(p => p.Id))}");
+                    $"Cannot retire category whilst there are still products assigned. {string.Join(',', category.Products.Select(p => p.Id))}");
 
                 return this.BadRequest(this.ModelState);
             }

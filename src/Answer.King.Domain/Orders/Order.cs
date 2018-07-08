@@ -104,7 +104,7 @@ namespace Answer.King.Domain.Orders
                 throw new OrderLifeCycleException($"Cannot complete order - Order status {this.OrderStatus}.");
             }
 
-            this.OrderStatus = OrderStatus.Completed;
+            this.OrderStatus = OrderStatus.Paid;
             this.LastUpdated = DateTime.UtcNow;
         }
 
@@ -123,7 +123,7 @@ namespace Answer.King.Domain.Orders
     public enum OrderStatus
     {
         Created = 0,
-        Completed = 1,
+        Paid = 1,
         Cancelled = 2
     }
 

@@ -44,6 +44,11 @@ namespace Answer.King.Domain.Repositories.Models
 
         public CategoryId Category { get; set; }
 
-        public bool Retired { get; set; }
+        public bool Retired { get; private set; }
+
+        public void Retire()
+        {
+            this.Retired = true;
+        }
     }
 }

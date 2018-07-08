@@ -12,10 +12,10 @@ namespace Answer.King.Infrastructure.Repositories.Mappings
         {
             mapper.RegisterType
             (
-                serialize: cat =>
+                serialize: order =>
                 {
 
-                    var lineItems = cat.LineItems.Select(li => new BsonDocument
+                    var lineItems = order.LineItems.Select(li => new BsonDocument
                     {
                         ["Product"] = new BsonDocument
                         {
@@ -27,10 +27,10 @@ namespace Answer.King.Infrastructure.Repositories.Mappings
 
                     var doc = new BsonDocument
                     {
-                        ["_id"] = cat.Id,
-                        ["CreatedOn"] = cat.CreatedOn,
-                        ["LastUpdated"] = cat.LastUpdated,
-                        ["OrderStatus"] = $"{cat.OrderStatus}",
+                        ["_id"] = order.Id,
+                        ["CreatedOn"] = order.CreatedOn,
+                        ["LastUpdated"] = order.LastUpdated,
+                        ["OrderStatus"] = $"{order.OrderStatus}",
                         ["LineItems"] = new BsonArray(lineItems)
                     };
 

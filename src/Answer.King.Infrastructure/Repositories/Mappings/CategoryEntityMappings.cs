@@ -10,19 +10,19 @@ namespace Answer.King.Infrastructure.Repositories.Mappings
         {
             mapper.RegisterType
             (
-                serialize: cat =>
+                serialize: category =>
                 {
-                    var products = cat.Products.Select(p => new BsonDocument { ["_id"] = p.Id });
+                    var products = category.Products.Select(p => new BsonDocument { ["_id"] = p.Id });
 
                     var doc = new BsonDocument
                     {
-                        ["_id"] = cat.Id,
-                        ["Name"] = cat.Name,
-                        ["Description"] = cat.Description,
-                        ["CreatedOn"] = cat.CreatedOn,
-                        ["LastUpdated"] = cat.LastUpdated,
+                        ["_id"] = category.Id,
+                        ["Name"] = category.Name,
+                        ["Description"] = category.Description,
+                        ["CreatedOn"] = category.CreatedOn,
+                        ["LastUpdated"] = category.LastUpdated,
                         ["Products"] = new BsonArray(products),
-                        ["Retired"] = cat.Retired
+                        ["Retired"] = category.Retired
                     };
 
                     return doc;

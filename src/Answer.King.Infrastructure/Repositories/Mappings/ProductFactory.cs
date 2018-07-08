@@ -24,6 +24,9 @@ namespace Answer.King.Infrastructure.Repositories.Mappings
 
             var parameters = new object[] { id, name, description, price, categoryId, retired };
 
+            /* invoking a private constructor will wrap up any exception into a
+             * TargetInvocationException so here I unwrap it
+             */
             try
             {
                 return (Product) ctor?.Invoke(parameters);

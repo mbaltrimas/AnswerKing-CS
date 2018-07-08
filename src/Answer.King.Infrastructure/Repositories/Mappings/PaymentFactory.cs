@@ -1,33 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Answer.King.Domain.Orders;
-using Answer.King.Domain.Orders.Models;
+using Answer.King.Domain.Repositories.Models;
 
 namespace Answer.King.Infrastructure.Repositories.Mappings
 {
-    internal static class OrderFactory
+    internal static class PaymentFactory
     {
-        public static Order CreateOrder(
-            Guid id,
-            DateTime createdOn,
-            DateTime lastUpdated,
-            OrderStatus status,
-            IList<LineItem> lineItems)
+        public static Payment CreatePayment(Guid id, Guid orderId, double amount, double orderTotal, DateTime date)
         {
-            var ctor = typeof(Order)
+            var ctor = typeof(Payment)
                 .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
                 .SingleOrDefault(c => c.IsPrivate);
 
-            var parameters = new object[] {id, createdOn, lastUpdated, status, lineItems};
+            var parameters = new object[] { id, orderId, amount, orderTotal, date };
 
             /* invoking a private constructor will wrap up any exception into a
              * TargetInvocationException so here I unwrap it
              */
             try
             {
-                return (Order) ctor?.Invoke(parameters);
+                return (Payment)ctor?.Invoke(parameters);
             }
             catch (TargetInvocationException ex)
             {

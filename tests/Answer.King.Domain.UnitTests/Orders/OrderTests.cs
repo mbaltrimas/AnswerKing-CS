@@ -172,7 +172,7 @@ namespace Answer.King.Domain.UnitTests.Orders
             return new List<object[]>
             {
                 new object[] { 0, OrderStatus.Created },
-                new object[] { 1, OrderStatus.Completed },
+                new object[] { 1, OrderStatus.Paid },
                 new object[] { 2, OrderStatus.Cancelled },
             }.GetEnumerator();
         }

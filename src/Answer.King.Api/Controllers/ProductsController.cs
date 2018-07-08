@@ -137,10 +137,10 @@ namespace Answer.King.Api.Controllers
         }
 
         /// <summary>
-        /// Remove an existind product.
+        /// Retire an existing product.
         /// </summary>
         /// <param name="id"></param>
-        /// <response code="200">When the product has been removed.</response>
+        /// <response code="200">When the product has been retired.</response>
         /// <response code="404">When the product with the given <paramref name="id"/> does not exist.</response>
         // DELETE api/products/{GUID}
         [HttpDelete("{id}")]
@@ -162,7 +162,7 @@ namespace Answer.King.Api.Controllers
                 await this.Categories.Save(category);
             }
             
-            product.Retired = true;
+            product.Retire();
 
             await this.Products.AddOrUpdate(product);
 

@@ -9,16 +9,16 @@ namespace Answer.King.Infrastructure.Repositories.Mappings
         {
             mapper.RegisterType
             (
-                serialize: cat =>
+                serialize: product =>
                 {
                     var doc = new BsonDocument
                     {
-                        ["_id"] = cat.Id,
-                        ["Name"] = cat.Name,
-                        ["Description"] = cat.Description,
-                        ["Price"] = cat.Price,
-                        ["Category"] = new BsonDocument { ["_id"] = cat.Category.Id },
-                        ["Retired"] = cat.Retired
+                        ["_id"] = product.Id,
+                        ["Name"] = product.Name,
+                        ["Description"] = product.Description,
+                        ["Price"] = product.Price,
+                        ["Category"] = new BsonDocument { ["_id"] = product.Category.Id },
+                        ["Retired"] = product.Retired
                     };
 
                     return doc;
