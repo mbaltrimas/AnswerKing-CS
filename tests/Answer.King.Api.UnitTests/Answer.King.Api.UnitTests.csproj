@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="NSubstitute" Version="3.1.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.console" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
   </ItemGroup>
 
@@ -20,5 +21,4 @@
       <HintPath>..\..\..\..\..\.nuget\packages\xunit.extensibility.core\2.3.1\lib\netstandard1.1\xunit.core.dll</HintPath>
     </Reference>
   </ItemGroup>
-
 </Project>
