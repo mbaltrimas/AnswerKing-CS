@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Answer.King.Domain.Inventory.Models;
-using Answer.King.Domain.Repositories;
+using Answer.King.Api.Services;
 using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,14 +12,12 @@ namespace Answer.King.Api.Controllers
     [Produces("application/json")]
     public class ProductsController : ControllerBase
     {
-        public ProductsController(IProductRepository products, ICategoryRepository categories)
+        public ProductsController(IProductService products)
         {
             this.Products = products;
-            this.Categories = categories;
         }
 
-        private IProductRepository Products { get; }
-        private ICategoryRepository Categories { get; }
+        private IProductService Products { get; }
 
         /// <summary>
         /// Get all products.
@@ -29,10 +26,10 @@ namespace Answer.King.Api.Controllers
         /// <response code="200">When all the products have been returned.</response>
         // GET api/products
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Domain.Orders.Models.Product>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
         public async Task<IActionResult> Get()
         {
-            return this.Ok(await this.Products.Get());
+            return this.Ok(await this.Products.GetProducts());
         }
 
         /// <summary>
@@ -44,11 +41,11 @@ namespace Answer.King.Api.Controllers
         /// <response code="404">When the product with the given <paramref name="id"/> does not exist</response>
         // GET api/products/{GUID}
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Domain.Orders.Models.Product), 200)]
+        [ProducesResponseType(typeof(Product), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(Guid id)
         {
-            var product = await this.Products.Get(id);
+            var product = await this.Products.GetProduct(id);
 
             if (product == null)
             {
@@ -66,27 +63,21 @@ namespace Answer.King.Api.Controllers
         /// <response code="400">When invalid parameters are provided.</response>
         // POST api/products
         [HttpPost]
-        [ProducesResponseType(typeof(Domain.Orders.Models.Product), 201)]
+        [ProducesResponseType(typeof(Product), 201)]
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
-        public async Task<IActionResult> Post([FromBody] Product createProduct)
+        public async Task<IActionResult> Post([FromBody] RequestModels.Product createProduct)
         {
-            var category = await this.Categories.Get(createProduct.Category.Id);
-
-            if (category == null)
+            try
             {
-                this.ModelState.AddModelError("Category", "The provided category id is not valid.");
+                var product = await this.Products.CreateProduct(createProduct);
+
+                return this.CreatedAtAction(nameof(Get), new {product.Id}, product);
+            }
+            catch (ProductServiceException ex)
+            {
+                this.ModelState.AddModelError("Category", ex.Message);
                 return this.BadRequest(this.ModelState);
             }
-
-            var product = new Product(
-                createProduct.Name,
-                createProduct.Description,
-                createProduct.Price,
-                new Category(category.Id, category.Name, category.Description));
-
-            await this.Products.AddOrUpdate(product);
-
-            return this.CreatedAtAction(nameof(Get), new { product.Id } ,product);
         }
 
         /// <summary>
@@ -99,40 +90,27 @@ namespace Answer.King.Api.Controllers
         /// <response code="404">When the product with the given <paramref name="id"/> does not exist.</response>
         // PUT api/products/{GUID}
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(Domain.Orders.Models.Product), 200)]
+        [ProducesResponseType(typeof(Product), 200)]
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Put(Guid id, [FromBody] Product updateProduct)
+        public async Task<IActionResult> Put(Guid id, [FromBody] RequestModels.Product updateProduct)
         {
-            var product = await this.Products.Get(id);
-
-            if (product == null)
+            try
             {
-                return this.NotFound();
+                var product = await this.Products.UpdateProduct(id, updateProduct);
+
+                if (product == null)
+                {
+                    return this.NotFound();
+                }
+
+                return this.Ok(product);
             }
-
-            var oldCategory = await this.Categories.GetByProductId(id);
-
-            oldCategory?.RemoveProduct(new ProductId(id));
-
-            var category = await this.Categories.Get(updateProduct.Category.Id);
-
-            if (category == null)
+            catch (ProductServiceException ex)
             {
-                this.ModelState.AddModelError("Category", "The provided category id is not valid.");
+                this.ModelState.AddModelError("Category", ex.Message);
                 return this.BadRequest(this.ModelState);
             }
-
-            category.AddProduct(new ProductId(id));
-
-            product.Name = updateProduct.Name;
-            product.Description = updateProduct.Description;
-            product.Price = updateProduct.Price;
-            product.Category = new Category(category.Id, category.Name, category.Description);
-
-            await this.Products.AddOrUpdate(product);
-
-            return this.Ok(product);
         }
 
         /// <summary>
@@ -143,27 +121,11 @@ namespace Answer.King.Api.Controllers
         /// <response code="404">When the product with the given <paramref name="id"/> does not exist.</response>
         // DELETE api/products/{GUID}
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Domain.Orders.Models.Product), 200)]
+        [ProducesResponseType(typeof(Product), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Retire(Guid id)
         {
-            var product = await this.Products.Get(id);
-
-            if (product == null)
-            {
-                return this.NotFound();
-            }
-
-            var category = await this.Categories.GetByProductId(id);
-            if (category != null)
-            {
-                category.RemoveProduct(new ProductId(id));
-                await this.Categories.Save(category);
-            }
-            
-            product.Retire();
-
-            await this.Products.AddOrUpdate(product);
+            var product = await this.Products.RetireProduct(id);
 
             return this.Ok(product);
         }

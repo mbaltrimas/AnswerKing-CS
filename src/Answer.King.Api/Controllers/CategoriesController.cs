@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Answer.King.Domain.Inventory;
-using Answer.King.Domain.Repositories;
+using Answer.King.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Category = Answer.King.Api.RequestModels.Category;
 using Product = Answer.King.Domain.Orders.Models.Product;
@@ -15,15 +14,15 @@ namespace Answer.King.Api.Controllers
     [Produces("application/json")]
     public class CategoriesController : ControllerBase
     {
-        public CategoriesController(ICategoryRepository categories, IProductRepository products)
+        public CategoriesController(ICategoryService categories, IProductService products)
         {
             this.Categories = categories;
             this.Products = products;
         }
 
-        private ICategoryRepository Categories { get; }
+        private ICategoryService Categories { get; }
 
-        private IProductRepository Products { get; }
+        private IProductService Products { get; }
 
         /// <summary>
         /// Get all categories.
@@ -35,7 +34,7 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<Domain.Inventory.Category>), 200)]
         public async Task<IActionResult> Get()
         {
-            return this.Ok(await this.Categories.Get());
+            return this.Ok(await this.Categories.GetCategories());
         }
 
         /// <summary>
@@ -51,7 +50,7 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(Guid id)
         {
-            var category = await this.Categories.Get(id);
+            var category = await this.Categories.GetCategory(id);
             if (category == null)
             {
                 return this.NotFound();
@@ -72,9 +71,7 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
         public async Task<IActionResult> Post([FromBody] Category createCategory)
         {
-            var category = new Domain.Inventory.Category(createCategory.Name, createCategory.Description);
-
-            await this.Categories.Save(category);
+            var category = await this.Categories.CreateCategory(createCategory);
 
             return this.CreatedAtAction(nameof(Get), new { category.Id }, category);
         }
@@ -94,15 +91,11 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Put(Guid id, [FromBody] Category updateCategory)
         {
-            var category = await this.Categories.Get(id);
+            var category = await this.Categories.UpdateCategory(id, updateCategory);
             if (category == null)
             {
                 return this.NotFound();
             }
-
-            category.Rename(updateCategory.Name, updateCategory.Description);
-
-            await this.Categories.Save(category);
 
             return this.Ok(category);
         }
@@ -121,26 +114,21 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Retire(Guid id)
         {
-            var category = await this.Categories.Get(id);
-
-            if (category == null)
+           try
             {
-                return this.NotFound();
-            }
+                var category = await this.Categories.RetireCategory(id);
 
-            try
-            {
-                category.RetireCategory();
-                await this.Categories.Save(category);
+                if (category == null)
+                {
+                    return this.NotFound();
+                }
 
                 return this.Ok(category);
             }
-            catch (CategoryLifecycleException)
+            catch (CategoryServiceException ex)
             {
                 // ignored
-                this.ModelState.AddModelError(
-                    "Products",
-                    $"Cannot retire category whilst there are still products assigned. {string.Join(',', category.Products.Select(p => p.Id))}");
+                this.ModelState.AddModelError("Products", ex.Message);
 
                 return this.BadRequest(this.ModelState);
             }
@@ -158,7 +146,7 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetProducts(Guid id)
         {
-            var category = await this.Categories.Get(id);
+            var category = await this.Categories.GetCategory(id);
 
             if (category == null)
             {
@@ -167,7 +155,7 @@ namespace Answer.King.Api.Controllers
 
             var productIds = category.Products.Select(p => p.Id);
 
-            var products = await this.Products.Get(productIds);
+            var products = await this.Products.GetProducts(productIds);
 
             return this.Ok(products);
         }

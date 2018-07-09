@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Answer.King.Domain.Orders.Models;
-using Answer.King.Domain.Repositories;
+using Answer.King.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Order = Answer.King.Api.RequestModels.Order;
 
@@ -14,17 +12,13 @@ namespace Answer.King.Api.Controllers
     [Produces("application/json")]
     public class OrdersController : ControllerBase
     {
-        public OrdersController(
-            IOrderRepository orders,
-            IProductRepository products)
+        public OrdersController(IOrderService orders)
         {
             this.Orders = orders;
-            this.Products = products;
         }
 
-        private IOrderRepository Orders { get; }
-
-        private IProductRepository Products { get; }
+        private IOrderService Orders { get; }
+        
 
         /// <summary>
         /// Get all orders.
@@ -36,7 +30,7 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<Domain.Orders.Order>), 200)]
         public async Task<IActionResult> Get()
         {
-            return this.Ok(await this.Orders.Get());
+            return this.Ok(await this.Orders.GetOrders());
         }
 
         /// <summary>
@@ -52,7 +46,7 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(Guid id)
         {
-            var order = await this.Orders.Get(id);
+            var order = await this.Orders.GetOrder(id);
             if (order == null)
             {
                 return this.NotFound();
@@ -64,7 +58,7 @@ namespace Answer.King.Api.Controllers
         /// <summary>
         /// Create a new order.
         /// </summary>
-        /// <param name="ordereOrder"></param>
+        /// <param name="createOrder"></param>
         /// <response code="201">When the order has been created.</response>
         /// <response code="400">When invalid parameters are provided.</response>
         // POST api/orders
@@ -73,36 +67,17 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
         public async Task<IActionResult> Post([FromBody] Order createOrder)
         {
-            var submittedProductIds = createOrder.LineItems.Select(l => l.Product.Id).ToList();
-
-            var matchingProducts =
-                (await this.Products.Get(submittedProductIds)).ToList();
-
-            var invalidProducts =
-                submittedProductIds.Except(matchingProducts.Select(p => p.Id))
-                    .ToList();
-
-            if (invalidProducts.Any())
+            try
             {
-                this.ModelState.AddModelError(
-                    "LineItems.ProductId",
-                    $"Product id{(invalidProducts.Count() > 1 ? "s" : "")} does not exist: {string.Join(',', invalidProducts)}");
+                var order = await this.Orders.CreateOrder(createOrder);
+
+                return this.CreatedAtAction(nameof(Get), new { order.Id }, order);
+            }
+            catch (ProductInvalidException ex)
+            {
+                this.ModelState.AddModelError("LineItems.ProductId", ex.Message);
                 return this.BadRequest(this.ModelState);
             }
-
-            var order = new Domain.Orders.Order();
-
-            foreach (var lineItem in createOrder.LineItems)
-            {
-                var product = matchingProducts.Single(p => p.Id == lineItem.Product.Id);
-                var category = new Category(product.Category.Id, product.Category.Name, product.Category.Description);
-
-                order.AddLineItem(product.Id, product.Name, product.Description, product.Price, category, lineItem.Quantity);
-            }
-
-            await this.Orders.Save(order);
-
-            return this.CreatedAtAction(nameof(Get), new { order.Id }, order);
         }
 
         /// <summary>
@@ -120,42 +95,23 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Put(Guid id, [FromBody] Order updateOrder)
         {
-            var order = await this.Orders.Get(id);
 
-            if (order == null)
+            try
             {
-                return this.NotFound();
+                var order = await this.Orders.UpdateOrder(id, updateOrder);
+
+                if (order == null)
+                {
+                    return this.NotFound();
+                }
+
+                return this.Ok(order);
             }
-
-            var submittedProductIds = updateOrder.LineItems.Select(l => l.Product.Id).ToList();
-
-            var matchingProducts =
-                (await this.Products.Get(submittedProductIds)).ToList();
-
-            var invalidProducts =
-                submittedProductIds.Except(matchingProducts.Select(p => p.Id))
-                    .ToList();
-
-            if (invalidProducts.Any())
+            catch (ProductInvalidException ex)
             {
-                this.ModelState.AddModelError(
-                    "LineItems.ProductId",
-                    $"Product id{(invalidProducts.Count > 1 ? "s":"")} does not exist: {string.Join(',', invalidProducts)}");
-
+                this.ModelState.AddModelError("LineItems.ProductId", ex.Message);
                 return this.BadRequest(this.ModelState);
             }
-
-            foreach (var lineItem in updateOrder.LineItems)
-            {
-                var product = matchingProducts.Single(p => p.Id == lineItem.Product.Id);
-                var category = new Category(product.Category.Id, product.Category.Name, product.Category.Description);
-
-                order.AddLineItem(product.Id, product.Name, product.Description, product.Price, category, lineItem.Quantity);
-            }
-
-            await this.Orders.Save(order);
-
-            return this.Ok(order);
         }
 
         /// <summary>
@@ -170,21 +126,11 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Cancel(Guid id)
         {
-            var order = await this.Orders.Get(id);
+            var order = await this.Orders.CancelOrder(id);
 
             if (order == null)
             {
                 return this.NotFound();
-            }
-
-            try
-            {
-                order.CancelOrder();
-                await this.Orders.Save(order);
-            }
-            catch (Exception)
-            {
-                // ignored
             }
 
             return this.Ok(order);

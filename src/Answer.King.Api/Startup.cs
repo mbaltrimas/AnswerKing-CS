@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Answer.King.Api.Services;
 using Answer.King.Domain.Repositories;
 using Answer.King.Infrastructure;
 using Answer.King.Infrastructure.Extensions.DependancyInjection;
@@ -60,6 +61,10 @@ namespace Answer.King.Api
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IPaymentRepository, PaymentRepository>();
+            services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<IPaymentService, PaymentService>();
+            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ICategoryService, CategoryService>();
             services.AddSingleton<ILiteDbConnectionFactory, LiteDbConnectionFactory>();
         }
 

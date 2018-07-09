@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Answer.King.Api.RequestModels;
-using Answer.King.Domain.Orders;
-using Answer.King.Domain.Repositories;
+using Answer.King.Api.Services;
 using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
 using Order = Answer.King.Domain.Orders.Order;
@@ -16,16 +15,16 @@ namespace Answer.King.Api.Controllers
     public class PaymentsController : ControllerBase
     {
         public PaymentsController(
-            IPaymentRepository payments,
-            IOrderRepository orders)
+            IPaymentService payments,
+            IOrderService orders)
         {
             this.Payments = payments;
             this.Orders = orders;
         }
 
-        private IPaymentRepository Payments { get; }
+        private IPaymentService Payments { get; }
 
-        private IOrderRepository Orders { get; }
+        private IOrderService Orders { get; }
 
         /// <summary>
         /// Gets all payments
@@ -37,7 +36,7 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<Payment>), 200)]
         public async Task<IActionResult> Get()
         {
-            var payments = await this.Payments.Get();
+            var payments = await this.Payments.GetPayments();
             return this.Ok(payments);
         }
 
@@ -54,7 +53,7 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(Guid id)
         {
-            var payment = await this.Payments.Get(id);
+            var payment = await this.Payments.GetPayment(id);
 
             if (payment == null)
             {
@@ -76,38 +75,15 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
         public async Task<IActionResult> Post([FromBody] MakePayment makePayment)
         {
-            var order = await this.Orders.Get(makePayment.OrderId);
-
-            if (order == null)
-            {
-                this.ModelState.AddModelError("OrderId", $"No order found for given order id: {makePayment.OrderId}.");
-                return this.BadRequest(this.ModelState);
-            }
-
             try
             {
-                var payment = new Payment(order.Id, makePayment.Amount, order.OrderTotal);
-
-                order.CompleteOrder();
-
-                await this.Orders.Save(order);
-                await this.Payments.Add(payment);
+                var payment = await this.Payments.MakePayment(makePayment);
 
                 return this.CreatedAtAction(nameof(Get), new { payment.Id }, payment);
-
             }
-            catch (PaymentException ex)
+            catch (PaymentServiceException ex)
             {
-                this.ModelState.AddModelError("Amount", ex.Message);
-                return this.BadRequest(this.ModelState);
-            }
-            catch (OrderLifeCycleException ex)
-            {
-                var msg = ex.Message.ToLower().Contains("paid")
-                    ? "Cannot make payment as order has already been paid."
-                    : "Cannot make payment as order is cancelled.";
-
-                this.ModelState.AddModelError("OrderId", msg);
+                this.ModelState.AddModelError("error", ex.Message);
                 return this.BadRequest(this.ModelState);
             }
         }
@@ -122,18 +98,16 @@ namespace Answer.King.Api.Controllers
         [HttpGet("{id}/order")]
         [ProducesResponseType(typeof(IEnumerable<Order>), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetProducts(Guid id)
+        public async Task<IActionResult> GetOrder(Guid id)
         {
-            var payment = await this.Payments.Get(id);
+            var payment = await this.Payments.GetPayment(id);
 
             if (payment == null)
             {
                 return this.NotFound();
             }
 
-            var orderId = payment.OrderId;
-
-            var order = await this.Orders.Get(orderId);
+            var order = await this.Orders.GetOrder(payment.OrderId);
 
             return this.Ok(order);
         }
