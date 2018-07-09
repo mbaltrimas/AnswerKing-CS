@@ -51,7 +51,7 @@ namespace Answer.King.Api.Services
             }
 
             var order = new Order();
-            order.AddLineItems(createOrder, matchingProducts);
+            order.AddOrRemoveLineItems(createOrder, matchingProducts);
 
             await this.Orders.Save(order);
 
@@ -82,7 +82,7 @@ namespace Answer.King.Api.Services
                     $"Product id{(invalidProducts.Count > 1 ? "s" : "")} does not exist: {string.Join(',', invalidProducts)}");
             }
 
-            order.AddLineItems(updateOrder, matchingProducts);
+            order.AddOrRemoveLineItems(updateOrder, matchingProducts);
 
             await this.Orders.Save(order);
 
