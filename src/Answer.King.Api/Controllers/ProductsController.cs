@@ -27,7 +27,7 @@ namespace Answer.King.Api.Controllers
         // GET api/products
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             return this.Ok(await this.Products.GetProducts());
         }
@@ -43,7 +43,7 @@ namespace Answer.King.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Product), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> GetOne(Guid id)
         {
             var product = await this.Products.GetProduct(id);
 
@@ -71,7 +71,7 @@ namespace Answer.King.Api.Controllers
             {
                 var product = await this.Products.CreateProduct(createProduct);
 
-                return this.CreatedAtAction(nameof(Get), new {product.Id}, product);
+                return this.CreatedAtAction(nameof(this.GetOne), new {product.Id}, product);
             }
             catch (ProductServiceException ex)
             {

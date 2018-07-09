@@ -32,7 +32,7 @@ namespace Answer.King.Api.Controllers
         // GET api/categories
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Domain.Inventory.Category>), 200)]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             return this.Ok(await this.Categories.GetCategories());
         }
@@ -48,7 +48,7 @@ namespace Answer.King.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Domain.Inventory.Category), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> GetOne(Guid id)
         {
             var category = await this.Categories.GetCategory(id);
             if (category == null)
@@ -73,7 +73,7 @@ namespace Answer.King.Api.Controllers
         {
             var category = await this.Categories.CreateCategory(createCategory);
 
-            return this.CreatedAtAction(nameof(Get), new { category.Id }, category);
+            return this.CreatedAtAction(nameof(this.GetOne), new { category.Id }, category);
         }
 
         /// <summary>

@@ -28,7 +28,7 @@ namespace Answer.King.Api.Controllers
         // GET api/orders
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Domain.Orders.Order>), 200)]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             return this.Ok(await this.Orders.GetOrders());
         }
@@ -44,7 +44,7 @@ namespace Answer.King.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Domain.Orders.Order), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> GetOne(Guid id)
         {
             var order = await this.Orders.GetOrder(id);
             if (order == null)
@@ -71,7 +71,7 @@ namespace Answer.King.Api.Controllers
             {
                 var order = await this.Orders.CreateOrder(createOrder);
 
-                return this.CreatedAtAction(nameof(Get), new { order.Id }, order);
+                return this.CreatedAtAction(nameof(this.GetOne), new { order.Id }, order);
             }
             catch (ProductInvalidException ex)
             {

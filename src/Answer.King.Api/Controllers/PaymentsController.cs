@@ -34,7 +34,7 @@ namespace Answer.King.Api.Controllers
         // GET: api/payments
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Payment>), 200)]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             var payments = await this.Payments.GetPayments();
             return this.Ok(payments);
@@ -51,7 +51,7 @@ namespace Answer.King.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Payment), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> GetOne(Guid id)
         {
             var payment = await this.Payments.GetPayment(id);
 
@@ -79,7 +79,7 @@ namespace Answer.King.Api.Controllers
             {
                 var payment = await this.Payments.MakePayment(makePayment);
 
-                return this.CreatedAtAction(nameof(Get), new { payment.Id }, payment);
+                return this.CreatedAtAction(nameof(this.GetOne), new { payment.Id }, payment);
             }
             catch (PaymentServiceException ex)
             {
