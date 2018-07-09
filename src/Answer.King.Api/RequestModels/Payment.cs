@@ -1,7 +1,6 @@
 ﻿using System;
-using Answer.King.Domain;
 
-namespace Answer.King.Api.ViewModels
+namespace Answer.King.Api.RequestModels
 {
     public class MakePayment
     {

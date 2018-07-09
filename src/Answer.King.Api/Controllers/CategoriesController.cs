@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Answer.King.Domain.Inventory;
 using Answer.King.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Category = Answer.King.Api.ViewModels.Category;
-using Product = Answer.King.Domain.Repositories.Models.Product;
+using Category = Answer.King.Api.RequestModels.Category;
+using Product = Answer.King.Domain.Orders.Models.Product;
 
 namespace Answer.King.Api.Controllers
 {

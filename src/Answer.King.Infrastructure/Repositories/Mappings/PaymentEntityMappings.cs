@@ -2,9 +2,9 @@
 
 namespace Answer.King.Infrastructure.Repositories.Mappings
 {
-    public class PaymentEntityMappings : EntityMappingBase
+    public class PaymentEntityMappings : IEntityMapping
     {
-        public override void RegisterMapping(BsonMapper mapper)
+        public void RegisterMapping(BsonMapper mapper)
         {
             mapper.RegisterType
             (

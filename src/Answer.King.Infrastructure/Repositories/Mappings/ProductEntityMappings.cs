@@ -3,9 +3,9 @@ using LiteDB;
 
 namespace Answer.King.Infrastructure.Repositories.Mappings
 {
-    public class ProductEntityMappings : EntityMappingBase
+    public class ProductEntityMappings : IEntityMapping
     {
-        public override void RegisterMapping(BsonMapper mapper)
+        public void RegisterMapping(BsonMapper mapper)
         {
             mapper.RegisterType
             (
@@ -17,7 +17,12 @@ namespace Answer.King.Infrastructure.Repositories.Mappings
                         ["Name"] = product.Name,
                         ["Description"] = product.Description,
                         ["Price"] = product.Price,
-                        ["Category"] = new BsonDocument { ["_id"] = product.Category.Id },
+                        ["Category"] = new BsonDocument
+                        {
+                            ["_id"] = product.Category.Id,
+                            ["Name"] = product.Category.Name,
+                            ["Description"] = product.Category.Description
+                        },
                         ["Retired"] = product.Retired
                     };
 
@@ -27,13 +32,17 @@ namespace Answer.King.Infrastructure.Repositories.Mappings
                 {
                     var doc = bson.AsDocument;
                     var cat = doc["Category"].AsDocument;
+                    var category = new Category(
+                        cat["_id"].AsGuid,
+                        cat["Name"].AsString,
+                        cat["Description"].AsString);
 
                     return ProductFactory.CreateProduct(
                         doc["_id"].AsGuid,
                         doc["Name"].AsString,
                         doc["Description"].AsString,
                         doc["Price"].AsDouble,
-                        new CategoryId(cat["_id"].AsGuid), 
+                        category, 
                         doc["Retired"].AsBoolean);
                 }
             );

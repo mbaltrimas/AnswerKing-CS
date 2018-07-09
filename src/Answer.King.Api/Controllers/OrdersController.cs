@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Answer.King.Domain.Orders.Models;
 using Answer.King.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Order = Answer.King.Api.ViewModels.Order;
-using Product = Answer.King.Domain.Repositories.Models.Product;
+using Order = Answer.King.Api.RequestModels.Order;
 
 namespace Answer.King.Api.Controllers
 {
@@ -95,7 +95,9 @@ namespace Answer.King.Api.Controllers
             foreach (var lineItem in createOrder.LineItems)
             {
                 var product = matchingProducts.Single(p => p.Id == lineItem.Product.Id);
-                order.AddLineItem(product.Id, product.Price, lineItem.Quantity);
+                var category = new Category(product.Category.Id, product.Category.Name, product.Category.Description);
+
+                order.AddLineItem(product.Id, product.Name, product.Description, product.Price, category, lineItem.Quantity);
             }
 
             await this.Orders.Save(order);
@@ -146,7 +148,9 @@ namespace Answer.King.Api.Controllers
             foreach (var lineItem in updateOrder.LineItems)
             {
                 var product = matchingProducts.Single(p => p.Id == lineItem.Product.Id);
-                order.AddLineItem(product.Id, product.Price, lineItem.Quantity);
+                var category = new Category(product.Category.Id, product.Category.Name, product.Category.Description);
+
+                order.AddLineItem(product.Id, product.Name, product.Description, product.Price, category, lineItem.Quantity);
             }
 
             await this.Orders.Save(order);
@@ -184,32 +188,6 @@ namespace Answer.King.Api.Controllers
             }
 
             return this.Ok(order);
-        }
-
-        /// <summary>
-        /// Get all products in an order.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <response code="200">When all the products have been returned.</response>
-        /// <response code="404">When the order with the given <paramref name="id"/> does not exist.</response>
-        // GET api/orders/{GUID}//products
-        [HttpGet("{id}/products")]
-        [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> GetProducts(Guid id)
-        {
-            var order = await this.Orders.Get(id);
-
-            if (order == null)
-            {
-                return this.NotFound();
-            }
-
-            var productIds = order.LineItems.Select(li => li.Product.Id);
-
-            var products = await this.Products.Get(productIds);
-
-            return this.Ok(products);
         }
     }
 }

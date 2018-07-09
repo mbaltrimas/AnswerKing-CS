@@ -4,7 +4,7 @@ namespace Answer.King.Domain.Repositories.Models
 {
     public class Product
     {
-        public Product(string name, string description, double price, CategoryId category)
+        public Product(string name, string description, double price, Category category)
         {
             Guard.AgainstNullOrEmptyArgument(nameof(name), name);
             Guard.AgainstNullOrEmptyArgument(nameof(description), description);
@@ -18,7 +18,7 @@ namespace Answer.King.Domain.Repositories.Models
             this.Category = category;
         }
 
-        private Product(Guid id, string name, string description, double price, CategoryId category, bool retired)
+        private Product(Guid id, string name, string description, double price, Category category, bool retired)
         {
             Guard.AgainstDefaultValue(nameof(id), id);
             Guard.AgainstNullOrEmptyArgument(nameof(name), name);
@@ -42,7 +42,7 @@ namespace Answer.King.Domain.Repositories.Models
 
         public double Price { get; set; }
 
-        public CategoryId Category { get; set; }
+        public Category Category { get; set; }
 
         public bool Retired { get; private set; }
 

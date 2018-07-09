@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Answer.King.Api.ViewModels;
+using Answer.King.Api.RequestModels;
 using Answer.King.Domain.Orders;
 using Answer.King.Domain.Repositories;
 using Answer.King.Domain.Repositories.Models;

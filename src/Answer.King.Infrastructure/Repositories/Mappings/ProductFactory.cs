@@ -15,14 +15,14 @@ namespace Answer.King.Infrastructure.Repositories.Mappings
             string name,
             string description,
             double price,
-            CategoryId categoryId,
+            Category category,
             bool retired)
         {
             var ctor = typeof(Product)
                 .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
                 .SingleOrDefault(c => c.IsPrivate);
 
-            var parameters = new object[] { id, name, description, price, categoryId, retired };
+            var parameters = new object[] { id, name, description, price, category, retired };
 
             /* invoking a private constructor will wrap up any exception into a
              * TargetInvocationException so here I unwrap it

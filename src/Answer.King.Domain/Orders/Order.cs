@@ -49,7 +49,7 @@ namespace Answer.King.Domain.Orders
 
         public IReadOnlyCollection<LineItem> LineItems => this._LineItems as List<LineItem>;
 
-        public void AddLineItem(Guid productId, double price, int quantity = 1)
+        public void AddLineItem(Guid productId, string productName, string productDescription, double price, Category productCategory, int quantity = 1)
         {
             Guard.AgainstDefaultValue(nameof(productId), productId);
 
@@ -62,7 +62,7 @@ namespace Answer.King.Domain.Orders
 
             if (lineItem == null)
             {
-                var product = new Product(productId, price);
+                var product = new Product(productId, productName, productDescription, price, productCategory);
                 lineItem = new LineItem(product);
                 this._LineItems.Add(lineItem);
             }

@@ -6,9 +6,9 @@ using LiteDB;
 
 namespace Answer.King.Infrastructure.Repositories.Mappings
 {
-    public class OrderEntityMappings : EntityMappingBase
+    public class OrderEntityMappings : IEntityMapping
     {
-        public override void RegisterMapping(BsonMapper mapper)
+        public void RegisterMapping(BsonMapper mapper)
         {
             mapper.RegisterType
             (
@@ -20,6 +20,14 @@ namespace Answer.King.Infrastructure.Repositories.Mappings
                         ["Product"] = new BsonDocument
                         {
                             ["_id"] = li.Product.Id,
+                            ["Name"] = li.Product.Name,
+                            ["Description"] = li.Product.Description,
+                            ["Category"] = new BsonDocument
+                            {
+                                ["_id"] = li.Product.Category.Id,
+                                ["Name"] = li.Product.Category.Name,
+                                ["Description"] = li.Product.Category.Description
+                            },
                             ["Price"] = li.Product.Price
                         },
                         ["Quantity"] = li.Quantity
@@ -58,11 +66,19 @@ namespace Answer.King.Infrastructure.Repositories.Mappings
         {
             var lineItem = item.AsDocument;
             var product = lineItem["Product"].AsDocument;
+            var category = product["Category"].AsDocument;
 
             var result = new LineItem(
                 new Product(
                     product["_id"].AsGuid,
-                    product["Price"].AsDouble)
+                    product["Name"].AsString,
+                    product["Description"].AsString,
+                    product["Price"].AsDouble,
+                    new Category(
+                        category["_id"].AsGuid,
+                        category["Name"].AsString,
+                        category["Description"].AsString)
+                    )
             );
 
             result.AddQuantity(lineItem["Quantity"].AsInt32);

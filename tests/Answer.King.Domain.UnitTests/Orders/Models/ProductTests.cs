@@ -1,7 +1,8 @@
-﻿using Answer.King.Domain.Orders.Models;
-using Answer.King.Test.Common.CustomTraits;
+﻿using Answer.King.Test.Common.CustomTraits;
 using System;
+using Answer.King.Domain.Orders.Models;
 using Xunit;
+using Product = Answer.King.Domain.Orders.Models.Product;
 
 namespace Answer.King.Domain.UnitTests.Orders.Models
 {
@@ -13,13 +14,19 @@ namespace Answer.King.Domain.UnitTests.Orders.Models
         {
             // Arrange
             var id = default(Guid);
+            var name = "name";
+            var description = "description";
             var price = 142;
+            var catgeory = new Category(Guid.NewGuid(), "name", "description");
 
             // Act / Assert
 
             Assert.Throws<Guard.DefaultValueException>(() => new Product(
                 id,
-                price)
+                name,
+                description,
+                price,
+                catgeory)
             );
         }
 
@@ -28,12 +35,18 @@ namespace Answer.King.Domain.UnitTests.Orders.Models
         {
             // Arrange
             var id = Guid.NewGuid();
+            var name = "name";
+            var description = "description";
             var price = -1;
+            var catgeory = new Category(Guid.NewGuid(), "name", "description");
 
             // Act Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => new Product(
                 id,
-                price)
+                name,
+                description,
+                price,
+                catgeory)
             );
         }
     }

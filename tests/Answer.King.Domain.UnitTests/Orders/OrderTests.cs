@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Answer.King.Domain.Orders.Models;
 using Xunit;
 
 namespace Answer.King.Domain.UnitTests.Orders
@@ -28,6 +29,9 @@ namespace Answer.King.Domain.UnitTests.Orders
             // Arrange
             var order = new Order();
             var id = Guid.NewGuid();
+            var name = "name";
+            var description = "description";
+            var category = new Category(Guid.NewGuid(), "name", "description");
             var price = 1.24;
             var quantity = 2;
 
@@ -35,7 +39,7 @@ namespace Answer.King.Domain.UnitTests.Orders
 
             // Act / Assert
             Assert.Throws<OrderLifeCycleException>(() =>
-                order.AddLineItem(id, price, quantity));
+                order.AddLineItem(id, name, description, price, category, quantity));
         }
 
         [Fact]
@@ -44,6 +48,9 @@ namespace Answer.King.Domain.UnitTests.Orders
             // Arrange
             var order = new Order();
             var id = Guid.NewGuid();
+            var name = "name";
+            var description = "description";
+            var category = new Category(Guid.NewGuid(), "name", "description");
             var price = 1.24;
             var quantity = 2;
 
@@ -51,7 +58,7 @@ namespace Answer.King.Domain.UnitTests.Orders
 
             // Act / Assert
             Assert.Throws<OrderLifeCycleException>(() =>
-                order.AddLineItem(id, price, quantity));
+                order.AddLineItem(id, name, description, price, category, quantity));
         }
 
         [Fact]
@@ -60,11 +67,14 @@ namespace Answer.King.Domain.UnitTests.Orders
             // Arrange
             var order = new Order();
             var id = Guid.NewGuid();
+            var name = "name";
+            var description = "description";
+            var category = new Category(Guid.NewGuid(), "name", "description");
             var price = 1.24;
             var quantity = 2;
 
             // Act
-            order.AddLineItem(id, price, quantity);
+            order.AddLineItem(id, name, description, price, category, quantity);
 
             var lineItem = order.LineItems.FirstOrDefault();
 
@@ -82,11 +92,14 @@ namespace Answer.King.Domain.UnitTests.Orders
             // Arrange
             var order = new Order();
             var id = Guid.NewGuid();
+            var name = "name";
+            var description = "description";
+            var category = new Category(Guid.NewGuid(), "name", "description");
             var price = 1.24;
             var quantity = 2;
 
             // Act
-            order.AddLineItem(id, price, quantity);
+            order.AddLineItem(id, name, description, price, category, quantity);
 
             var lineItem = order.LineItems.FirstOrDefault();
 
@@ -101,11 +114,14 @@ namespace Answer.King.Domain.UnitTests.Orders
             // Arrange
             var order = new Order();
             var id = Guid.NewGuid();
+            var name = "name";
+            var description = "description";
+            var category = new Category(Guid.NewGuid(), "name", "description");
             var price = 1.24;
             var quantity = 2;
 
             // Act
-            order.AddLineItem(id, price, quantity);
+            order.AddLineItem(id, name, description, price, category, quantity);
 
             var lineItem = order.LineItems.FirstOrDefault();
 

@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Answer.King.Infrastructure.Repositories.Mappings;
+using Answer.King.Infrastructure.SeedData;
 
 namespace Answer.King.Infrastructure.Extensions.DependancyInjection
 {
-    public class LiteDbEntityMappingOptions
+    public class LiteDbOptions
     {
-        internal List<Type> TypesToRegister { get; } = new List<Type>();
+        internal List<Type> EntityMappers { get; } = new List<Type>();
+
+        internal List<Type> DataSeeders { get; } = new List<Type>();
 
         public void RegisterEntityMappingsFromAssemblyContaining<T>()
         {
@@ -18,7 +21,19 @@ namespace Answer.King.Infrastructure.Extensions.DependancyInjection
                     && !t.IsAbstract
                     && !t.IsInterface).ToList();
 
-            this.TypesToRegister.AddRange(types);
+            this.EntityMappers.AddRange(types);
+        }
+
+        public void RegisterDataSeedingFromAssemblyContaining<T>()
+        {
+            var assembly = typeof(T).Assembly;
+            var types = assembly.GetTypes()
+                .Where(t =>
+                    typeof(ISeedData).IsAssignableFrom(t)
+                    && !t.IsAbstract
+                    && !t.IsInterface).ToList();
+
+            this.DataSeeders.AddRange(types);
         }
     }
 }

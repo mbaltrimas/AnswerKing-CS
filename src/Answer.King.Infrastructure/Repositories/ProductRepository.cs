@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Answer.King.Domain.Repositories;
 using Answer.King.Domain.Repositories.Models;
-using Answer.King.Infrastructure.SeedData;
 using LiteDB;
 
 namespace Answer.King.Infrastructure.Repositories
@@ -16,8 +15,6 @@ namespace Answer.King.Infrastructure.Repositories
             var db = connections.GetConnection();
 
             this.Collection = db.GetCollection<Product>();
-
-            this.SeedData();
         }
 
         private LiteCollection<Product> Collection { get; }
@@ -42,23 +39,5 @@ namespace Answer.King.Infrastructure.Repositories
         {
             return Task.FromResult(this.Collection.Upsert(product));
         }
-
-        private void SeedData()
-        {
-            if (DataSeeded)
-            {
-                return;
-            }
-
-            var none = this.Collection.Count() < 1;
-            if (none)
-            {
-                this.Collection.InsertBulk(ProductData.Products);
-            }
-
-            DataSeeded = true;
-        }
-
-        private static bool DataSeeded { get; set; }
     }
 }

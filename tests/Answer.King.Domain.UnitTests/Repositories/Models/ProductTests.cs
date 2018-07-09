@@ -127,7 +127,7 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
             var id = Guid.NewGuid();
             var productName = "Product Name";
             var productDescription = "Product Description";
-            var category = (null as CategoryId);
+            var category = (null as Category);
             var price = 142;
             var retired = false;
 
@@ -166,8 +166,10 @@ namespace Answer.King.Domain.UnitTests.Repositories.Models
 
         #region Helpers
 
-        private CategoryId GetCategory() => new CategoryId(
-            Guid.NewGuid()
+        private Category GetCategory() => new Category(
+            Guid.NewGuid(),
+            "name",
+            "description"
         );
 
         #endregion Helpers

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Answer.King.Api.ViewModels
+namespace Answer.King.Api.RequestModels
 {
     public class Order
     {

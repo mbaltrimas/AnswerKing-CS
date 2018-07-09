@@ -7,6 +7,7 @@ using Answer.King.Infrastructure;
 using Answer.King.Infrastructure.Extensions.DependancyInjection;
 using Answer.King.Infrastructure.Repositories;
 using Answer.King.Infrastructure.Repositories.Mappings;
+using Answer.King.Infrastructure.SeedData;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -36,8 +37,11 @@ namespace Answer.King.Api
                 .AddFluentValidation(
                     fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
-            services.ConfigureEntityMapping(options =>
-                options.RegisterEntityMappingsFromAssemblyContaining<IEntityMapping>());
+            services.ConfigureLiteDb(options =>
+                {
+                    options.RegisterEntityMappingsFromAssemblyContaining<IEntityMapping>();
+                    options.RegisterDataSeedingFromAssemblyContaining<ISeedData>();
+                });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(options =>
@@ -88,6 +92,7 @@ namespace Answer.King.Api
                 app.UseHsts();
             }
 
+            app.UseLiteDb();
             app.UseHttpsRedirection();
             app.UseMvc();
         }

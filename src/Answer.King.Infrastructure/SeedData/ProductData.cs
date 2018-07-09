@@ -26,10 +26,11 @@ namespace Answer.King.Infrastructure.SeedData
                 false)
         };
 
-        private static CategoryId Category(Guid id)
+
+        private static Category Category(Guid id)
         {
             return CategoryData.Categories.Where(c => c.Id == id)
-                               .Select(x => new CategoryId(x.Id)).SingleOrDefault();
+                               .Select(x => new Category(x.Id, x.Name, x.Description)).SingleOrDefault();
         }
     }
 }

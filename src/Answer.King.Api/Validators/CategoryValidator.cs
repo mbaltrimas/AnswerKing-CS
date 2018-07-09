@@ -1,4 +1,4 @@
-﻿using Answer.King.Api.ViewModels;
+﻿using Answer.King.Api.RequestModels;
 using FluentValidation;
 
 namespace Answer.King.Api.Validators

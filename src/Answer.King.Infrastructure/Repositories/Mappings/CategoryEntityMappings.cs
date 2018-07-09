@@ -4,9 +4,9 @@ using LiteDB;
 
 namespace Answer.King.Infrastructure.Repositories.Mappings
 {
-    public class CategoryEntityMappings : EntityMappingBase
+    public class CategoryEntityMappings : IEntityMapping
     {
-        public override void RegisterMapping(BsonMapper mapper)
+        public void RegisterMapping(BsonMapper mapper)
         {
             mapper.RegisterType
             (

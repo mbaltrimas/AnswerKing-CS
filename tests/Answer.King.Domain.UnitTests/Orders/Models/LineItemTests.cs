@@ -2,6 +2,7 @@
 using Answer.King.Test.Common.CustomTraits;
 using System;
 using Xunit;
+using Product = Answer.King.Domain.Orders.Models.Product;
 
 namespace Answer.King.Domain.UnitTests.Orders.Models
 {
@@ -96,7 +97,10 @@ namespace Answer.King.Domain.UnitTests.Orders.Models
 
         private Product GetProduct() => new Product(
             Guid.NewGuid(),
-            142
+            "name",
+            "description",
+            142,
+            new Category(Guid.NewGuid(), "name", "description")
         );
 
         #endregion Helpers
