@@ -9,33 +9,14 @@ namespace Answer.King.Api.Services.Extensions
 {
     public static class OrderExtensions
     {
-        public static void AddOrRemoveLineItems(this Order order, RequestModels.Order createOrder, IList<Product> domainProducts)
+        public static void AddOrRemoveLineItems(this Order order, RequestModels.Order orderChanges, IList<Product> domainProducts)
         {
-            var newProductIds = createOrder.LineItems.Select(li => li.Product.Id);
+            var actions = new List<AddRemoveAction>();
+            actions.AddRange(GetLineItemsToAdd(order, orderChanges));
+            actions.AddRange(GetLineItemsToRemove(order, orderChanges));
+            actions.AddRange(GetLineItemQuantityActions(order, orderChanges));
 
-            var lineItemsToRemove =
-                order.LineItems
-                    .Where(x => !newProductIds.Contains(x.Product.Id))
-                    .ToList();
-
-            lineItemsToRemove.ForEach(li => order.RemoveLineItem(li.Product.Id, li.Quantity));
-
-            var addRemoveActions =
-                order.LineItems.Select(lineItem =>
-                {
-                    var updatedLineItem =
-                        createOrder.LineItems
-                            .First(li => li.Product.Id == lineItem.Product.Id);
-
-                    return new
-                    {
-                        ProductId = lineItem.Product.Id,
-                        QuantityDifference = Math.Abs(lineItem.Quantity - updatedLineItem.Quantity),
-                        IsIncrease = lineItem.Quantity < updatedLineItem.Quantity
-                    };
-                });
-
-            foreach (var action in addRemoveActions)
+            foreach (var action in actions)
             {
                 if (action.IsIncrease)
                 {
@@ -55,27 +36,76 @@ namespace Answer.King.Api.Services.Extensions
                     order.RemoveLineItem(action.ProductId, action.QuantityDifference);
                 }
             }
+        }
 
+        private static IEnumerable<AddRemoveAction> GetLineItemsToRemove(Order order, RequestModels.Order orderChanges)
+        {
+            var newProductIds = orderChanges.LineItems.Select(li => li.Product.Id);
+
+            var lineItemsToRemove =
+                order.LineItems
+                    .Where(x => !newProductIds.Contains(x.Product.Id))
+                    .ToList();
+
+            var removeActions =
+                lineItemsToRemove.Select(lineItem => 
+                    new AddRemoveAction
+                    {
+                        ProductId = lineItem.Product.Id,
+                        QuantityDifference = lineItem.Quantity,
+                        IsIncrease = false
+                    });
+
+            return removeActions;
+        }
+
+        private static IEnumerable<AddRemoveAction> GetLineItemsToAdd(Order order, RequestModels.Order orderChanges)
+        {
             var oldProductIds = order.LineItems.Select(li => li.Product.Id);
 
             var lineItemsToAdd =
-                createOrder.LineItems
+                orderChanges.LineItems
                     .Where(x => !oldProductIds.Contains(x.Product.Id))
                     .ToList();
 
-            lineItemsToAdd.ForEach(li =>
-            {
-                var product = domainProducts.Single(p => p.Id == li.Product.Id);
-                var category = new Category(product.Category.Id, product.Category.Name, product.Category.Description);
+            var addActions = 
+                lineItemsToAdd.Select(lineItem => 
+                    new AddRemoveAction
+                    {
+                        ProductId = lineItem.Product.Id,
+                        QuantityDifference = lineItem.Quantity,
+                        IsIncrease = true
+                    });
 
-                order.AddLineItem(
-                    product.Id,
-                    product.Name,
-                    product.Description,
-                    product.Price,
-                    category,
-                    li.Quantity);
+            return addActions;
+        }
+
+        private static IEnumerable<AddRemoveAction> GetLineItemQuantityActions(Order order, RequestModels.Order orderChanges)
+        {
+            var quantityAddRemoveActions = order.LineItems.Select(lineItem =>
+            {
+                var updatedLineItem =
+                    orderChanges.LineItems
+                        .First(li => li.Product.Id == lineItem.Product.Id);
+
+                return new AddRemoveAction
+                {
+                    ProductId = lineItem.Product.Id,
+                    QuantityDifference = Math.Abs(lineItem.Quantity - updatedLineItem.Quantity),
+                    IsIncrease = lineItem.Quantity < updatedLineItem.Quantity
+                };
             });
+
+            return quantityAddRemoveActions;
+        }
+
+        private class AddRemoveAction
+        {
+            public Guid ProductId { get; set; }
+
+            public int QuantityDifference { get; set; }
+
+            public bool IsIncrease { get; set; }
         }
     }
 }
