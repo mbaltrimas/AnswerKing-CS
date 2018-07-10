@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Answer.King.Api.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Answer.King.Api.Services;
-using Microsoft.AspNetCore.Mvc;
 using Category = Answer.King.Api.RequestModels.Category;
 using Product = Answer.King.Domain.Orders.Models.Product;
 
 namespace Answer.King.Api.Controllers
 {
-    [Route("api/categories")]
+    [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
     public class CategoriesController : ControllerBase

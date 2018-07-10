@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Answer.King.Domain.Inventory.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Answer.King.Domain.Inventory.Models;
 
 namespace Answer.King.Domain.Inventory
 {
@@ -44,10 +44,6 @@ namespace Answer.King.Domain.Inventory
             this.LastUpdated = lastUpdated;
             this._Products = products ?? new List<ProductId>();
             this.Retired = retired;
-        }
-
-        public Category()
-        {
         }
 
         public Guid Id { get; }
