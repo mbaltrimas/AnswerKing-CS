@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Answer.King.Api.Services;
+﻿using Answer.King.Api.Services;
 using Answer.King.Domain.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Answer.King.Api.Controllers
 {
@@ -71,7 +71,7 @@ namespace Answer.King.Api.Controllers
             {
                 var product = await this.Products.CreateProduct(createProduct);
 
-                return this.CreatedAtAction(nameof(this.GetOne), new {product.Id}, product);
+                return this.CreatedAtAction(nameof(this.GetOne), new { product.Id }, product);
             }
             catch (ProductServiceException ex)
             {

@@ -12,8 +12,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Answer.King.Infrastructure\Answer.King.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Answer.King.Api\Answer.King.Api.csproj" />
     <ProjectReference Include="..\Answer.King.Test.Common\Answer.King.Test.Common.csproj" />
-    <ProjectReference Include="..\..\src\Answer.King.Domain\Answer.King.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="xunit.core">
+      <HintPath>..\..\..\..\..\.nuget\packages\xunit.extensibility.core\2.3.1\lib\netstandard1.1\xunit.core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

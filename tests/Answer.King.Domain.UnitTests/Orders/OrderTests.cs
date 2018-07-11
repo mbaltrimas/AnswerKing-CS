@@ -165,6 +165,77 @@ namespace Answer.King.Domain.UnitTests.Orders
                 order.RemoveLineItem(id, quantity));
         }
 
+        [Fact]
+        public void RemoveLineItem_LineItemDoesNotExistInOrder_DoesNotAttemptToRemoveFromOrder()
+        {
+            // Arrange
+            var order = new Order();
+            var id = Guid.NewGuid();
+            var quantity = 3;
+
+            // Act
+            order.RemoveLineItem(id, quantity);
+
+            // Assert
+            Assert.Empty(order.LineItems);
+        }
+
+        [Fact]
+        public void RemoveLineItem_LineItemExistsInOrder_DecrementCorrectQuantityValue()
+        {
+            // Arrange
+            var order = new Order();
+            var id = Guid.NewGuid();
+            var productName = "PRODUCT_NAME";
+            var productDescription = "PRODUCT_DESCRIPTION";
+            var category = new Category(
+                Guid.Parse("9BAC7050-D3C4-4793-A5C8-BEEAC4EA4229"),
+                "CATEGORY_NAME",
+                "CATEGORY_DESCRIPTION"
+            );
+            var quantity = 5;
+            var price = 1.25;
+
+            order.AddLineItem(id, productName, productDescription, price, category, quantity);
+
+            // Act
+            order.RemoveLineItem(id, 3);
+
+            var lineItem = order.LineItems.FirstOrDefault();
+
+            // Assert
+            Assert.NotNull(lineItem);
+            Assert.Equal(2, lineItem.Quantity);
+        }
+
+        [Fact]
+        public void RemoveLineItem_LineItemExistsInOrder_RemovedFromOrderIfQuantityGteCurrent()
+        {
+            // Arrange
+            var order = new Order();
+            var id = Guid.NewGuid();
+            var productName = "PRODUCT_NAME";
+            var productDescription = "PRODUCT_DESCRIPTION";
+            var category = new Category(
+                Guid.Parse("9BAC7050-D3C4-4793-A5C8-BEEAC4EA4229"),
+                "CATEGORY_NAME",
+                "CATEGORY_DESCRIPTION"
+            );
+            var quantity = 3;
+            var price = 1.25;
+
+            order.AddLineItem(id, productName, productDescription, price, category, quantity);
+
+            // Act
+            order.RemoveLineItem(id, 3);
+
+            var lineItem = order.LineItems.FirstOrDefault();
+
+            // Assert
+            Assert.Null(lineItem);
+            Assert.Equal(0, order.LineItems.Count);
+        }
+
         #endregion RemoveLineItem
 
         #region Helpers

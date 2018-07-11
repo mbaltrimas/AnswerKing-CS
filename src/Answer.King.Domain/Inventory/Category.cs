@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Answer.King.Domain.Inventory.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Answer.King.Domain.Inventory.Models;
 
 namespace Answer.King.Domain.Inventory
 {

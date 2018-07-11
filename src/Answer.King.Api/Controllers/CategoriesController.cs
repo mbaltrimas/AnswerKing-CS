@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Answer.King.Api.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Answer.King.Api.Services;
-using Microsoft.AspNetCore.Mvc;
 using Category = Answer.King.Api.RequestModels.Category;
 using Product = Answer.King.Domain.Orders.Models.Product;
 
@@ -114,7 +114,7 @@ namespace Answer.King.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Retire(Guid id)
         {
-           try
+            try
             {
                 var category = await this.Categories.RetireCategory(id);
 
