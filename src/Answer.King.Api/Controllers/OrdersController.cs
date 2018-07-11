@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Answer.King.Api.Services;
+using Answer.King.Domain.Orders;
 using Microsoft.AspNetCore.Mvc;
 using Order = Answer.King.Api.RequestModels.Order;
 
@@ -108,6 +109,11 @@ namespace Answer.King.Api.Controllers
             catch (ProductInvalidException ex)
             {
                 this.ModelState.AddModelError("LineItems.ProductId", ex.Message);
+                return this.BadRequest(this.ModelState);
+            }
+            catch (OrderLifeCycleException ex)
+            {
+                this.ModelState.AddModelError("Order", ex.Message);
                 return this.BadRequest(this.ModelState);
             }
         }
