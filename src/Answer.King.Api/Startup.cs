@@ -36,7 +36,12 @@ namespace Answer.King.Api
             {
                 options.AddPolicy(
                     "AllowAnyOrigin",
-                    builder => builder.AllowAnyOrigin());
+                    builder =>
+                        builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
             });
 
             services.AddRouting(options => options.LowercaseUrls = true);
