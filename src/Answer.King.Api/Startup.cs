@@ -32,6 +32,13 @@ namespace Answer.King.Api
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    "AllowAnyOrigin",
+                    builder => builder.AllowAnyOrigin());
+            });
+
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -84,7 +91,7 @@ namespace Answer.King.Api
                     });
                 });
 
-                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
                 // specifying the Swagger JSON endpoint.
                 app.UseSwaggerUI(options =>
                 {
@@ -97,6 +104,7 @@ namespace Answer.King.Api
                 app.UseHsts();
             }
 
+            app.UseCors("AllowAnyOrigin");
             app.UseLiteDb();
             app.UseHttpsRedirection();
             app.UseMvc();
