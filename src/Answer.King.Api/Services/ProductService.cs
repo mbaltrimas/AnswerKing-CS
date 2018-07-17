@@ -53,6 +53,10 @@ namespace Answer.King.Api.Services
 
             await this.Products.AddOrUpdate(product);
 
+            category.AddProduct(new ProductId(product.Id));
+
+            await this.Categories.Save(category);
+
             return product;
         }
 
