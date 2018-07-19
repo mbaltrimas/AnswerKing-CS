@@ -43,7 +43,7 @@ namespace Answer.King.Domain.Orders
 
         public OrderStatus OrderStatus { get; private set; }
 
-        public double OrderTotal => this.LineItems.Sum(li => li.Product.Price);
+        public double OrderTotal => this.LineItems.Sum(li => li.SubTotal);
 
         private IList<LineItem> _LineItems { get; }
 
