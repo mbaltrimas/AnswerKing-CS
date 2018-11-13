@@ -65,7 +65,7 @@ namespace Answer.King.Api.Services.Extensions
 
             var lineItemsToAdd =
                 orderChanges.LineItems
-                    .Where(x => !oldProductIds.Contains(x.Product.Id))
+                    .Where(x => !oldProductIds.Contains(x.Product.Id) && x.Quantity > 0)
                     .ToList();
 
             var addActions = 

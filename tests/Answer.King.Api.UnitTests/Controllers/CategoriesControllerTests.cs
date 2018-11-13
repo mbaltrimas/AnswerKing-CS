@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Answer.King.Api.UnitTests.Controllers
@@ -63,7 +64,7 @@ namespace Answer.King.Api.UnitTests.Controllers
         }
 
         [Fact]
-        public async void GetOne_ValidRequestWithNullResult_ReturnsNotFoundResult()
+        public async Task GetOne_ValidRequestWithNullResult_ReturnsNotFoundResult()
         {
             // Arrange
             Category data = null;
@@ -77,7 +78,7 @@ namespace Answer.King.Api.UnitTests.Controllers
         }
 
         [Fact(Skip = "Solve access issue for private Category - WIP")]
-        public async void GetOne_ValidRequestWithResult_ReturnsOkObjectResult()
+        public void GetOne_ValidRequestWithResult_ReturnsOkObjectResult()
         {
             // Arrange
             //var data = new Category();
