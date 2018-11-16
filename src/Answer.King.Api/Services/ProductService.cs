@@ -88,6 +88,7 @@ namespace Answer.King.Api.Services
             product.Category = new Category(category.Id, category.Name, category.Description);
 
             await this.Products.AddOrUpdate(product);
+            await this.Categories.Save(category);
 
             return product;
         }
