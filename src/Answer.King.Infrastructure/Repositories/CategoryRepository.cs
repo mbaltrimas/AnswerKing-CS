@@ -42,7 +42,7 @@ namespace Answer.King.Infrastructure.Repositories
         public Task<Category> GetByProductId(Guid productId)
         {
             return Task.FromResult(
-                this.Collection.FindOne(c => c.Products.Any(p => p.Id == productId)));
+                this.Collection.FindOne(c => c.Products.FirstOrDefault(p => p.Id == productId) != null));
         }
 
         private void SeedData()

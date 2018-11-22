@@ -70,17 +70,27 @@ namespace Answer.King.Api.Services
             }
 
             var oldCategory = await this.Categories.GetByProductId(productId);
+            var category = null as Domain.Inventory.Category;
 
-            oldCategory?.RemoveProduct(new ProductId(productId));
-
-            var category = await this.Categories.Get(updateProduct.Category.Id);
-
-            if (category == null)
+            if(oldCategory.Id == updateProduct.Category.Id)
             {
-                throw new ProductServiceException("The provided category id is not valid.");
+                category = oldCategory;
             }
+            else
+            {
+                oldCategory?.RemoveProduct(new ProductId(productId));
+                category = await this.Categories.Get(updateProduct.Category.Id);
 
-            category.AddProduct(new ProductId(productId));
+                if(category == null)
+                {
+                    throw new ProductServiceException("The provided category id is not valid.");
+                }
+
+                category.AddProduct(new ProductId(productId));
+
+                await this.Categories.Save(oldCategory);
+                await this.Categories.Save(category);
+            }
 
             product.Name = updateProduct.Name;
             product.Description = updateProduct.Description;
@@ -88,7 +98,6 @@ namespace Answer.King.Api.Services
             product.Category = new Category(category.Id, category.Name, category.Description);
 
             await this.Products.AddOrUpdate(product);
-            await this.Categories.Save(category);
 
             return product;
         }
