@@ -64,23 +64,37 @@ namespace Answer.King.Api.Services
         {
             var product = await this.Products.Get(productId);
 
-            if (product == null)
+            if(product == null)
             {
                 return null;
             }
 
             var oldCategory = await this.Categories.GetByProductId(productId);
 
-            oldCategory?.RemoveProduct(new ProductId(productId));
+            if(oldCategory == null)
+            {
+                throw new ProductServiceException("Could not find a category for this product id.");
+            }
 
-            var category = await this.Categories.Get(updateProduct.Category.Id);
+            var categoryChanged = oldCategory.Id != updateProduct.Category.Id;
 
-            if (category == null)
+            var category = categoryChanged
+                ? await this.Categories.Get(updateProduct.Category.Id)
+                : oldCategory;
+
+            if(category == null)
             {
                 throw new ProductServiceException("The provided category id is not valid.");
             }
 
-            category.AddProduct(new ProductId(productId));
+            if(categoryChanged)
+            {
+                oldCategory.RemoveProduct(new ProductId(productId));
+                await this.Categories.Save(oldCategory);
+
+                category.AddProduct(new ProductId(productId));
+                await this.Categories.Save(category);
+            }
 
             product.Name = updateProduct.Name;
             product.Description = updateProduct.Description;
@@ -88,7 +102,6 @@ namespace Answer.King.Api.Services
             product.Category = new Category(category.Id, category.Name, category.Description);
 
             await this.Products.AddOrUpdate(product);
-            await this.Categories.Save(category);
 
             return product;
         }

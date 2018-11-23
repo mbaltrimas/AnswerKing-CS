@@ -41,8 +41,8 @@ namespace Answer.King.Infrastructure.Repositories
 
         public Task<Category> GetByProductId(Guid productId)
         {
-            return Task.FromResult(
-                this.Collection.FindOne(c => c.Products.Any(p => p.Id == productId)));
+            var query = Query.EQ("Products[*]._id", productId);
+            return Task.FromResult(this.Collection.FindOne(query));
         }
 
         private void SeedData()
