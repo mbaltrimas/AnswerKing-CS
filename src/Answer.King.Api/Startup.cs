@@ -46,7 +46,7 @@ namespace Answer.King.Api
 
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation(
                     fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
