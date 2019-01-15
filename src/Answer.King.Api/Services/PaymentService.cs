@@ -68,7 +68,7 @@ namespace Answer.King.Api.Services
     }
 
     [Serializable]
-    internal class PaymentServiceException : Exception
+    public class PaymentServiceException : Exception
     {
         public PaymentServiceException(string message) : base(message)
         {

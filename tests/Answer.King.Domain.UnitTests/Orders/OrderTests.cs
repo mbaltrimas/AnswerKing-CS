@@ -1,10 +1,10 @@
-﻿using Answer.King.Domain.Orders;
-using Answer.King.Test.Common.CustomTraits;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Answer.King.Domain.Orders;
 using Answer.King.Domain.Orders.Models;
+using Answer.King.Test.Common.CustomTraits;
 using Xunit;
 
 namespace Answer.King.Domain.UnitTests.Orders
@@ -19,6 +19,24 @@ namespace Answer.King.Domain.UnitTests.Orders
             var totalConstants = GetAll().Count();
 
             Assert.Equal(totalStreamNamesTested, totalConstants);
+        }
+
+        [Fact]
+        public void CompleteOrder_OrderStatusCancelled_ThrowsOrderLifecycleException()
+        {
+            var order = new Order();
+            order.CancelOrder();
+            
+            Assert.Throws<OrderLifeCycleException>(() => order.CompleteOrder());
+        }
+        
+        [Fact]
+        public void CancelOrder_OrderStatusCompleted_ThrowsOrderLifecycleException()
+        {
+            var order = new Order();
+            order.CompleteOrder();
+            
+            Assert.Throws<OrderLifeCycleException>(() => order.CancelOrder());
         }
 
         #region AddLineItem
