@@ -1,7 +1,6 @@
 using System;
 using Answer.King.Api.RequestModels;
 using Answer.King.Api.Services;
-using Answer.King.Domain;
 using Answer.King.Domain.Repositories;
 using Answer.King.Test.Common.CustomTraits;
 using NSubstitute;
@@ -15,12 +14,13 @@ namespace Answer.King.Api.UnitTests.Services
     {
         public ProductServiceTests()
         {
-            this.ProductService = new ProductService(this.ProductRepository, this.CategoryRepository);
+            this._productService = new ProductService(this._productRepository, this._categoryRepository);
         }
 
         [Fact]
         public async void CreateProduct_InvalidCategoryThrowsException()
         {
+            // Arrange
             var productRequest = new Product
             {
                 Name = "Laptop",
@@ -29,60 +29,74 @@ namespace Answer.King.Api.UnitTests.Services
                 Category = new CategoryId {Id = Guid.NewGuid()}
             };
 
-            this.CategoryRepository.Get(Arg.Any<Guid>()).Returns(null as Category);
+            // Act
+            this._categoryRepository.Get(Arg.Any<Guid>()).Returns(null as Category);
 
-            await Assert.ThrowsAsync<ProductServiceException>(() => ProductService.CreateProduct(productRequest));
+            // Assert
+            await Assert.ThrowsAsync<ProductServiceException>(() => this._productService.CreateProduct(productRequest));
         }
 
         [Fact]
         public async void RetireProduct_ReturnsNullIfProductNotFound()
         {
-            this.ProductRepository.Get(Arg.Any<Guid>()).Returns(null as Domain.Repositories.Models.Product);
-            Assert.Null(await this.ProductService.RetireProduct(Guid.NewGuid()));
+            // Arrange
+            this._productRepository.Get(Arg.Any<Guid>()).Returns(null as Domain.Repositories.Models.Product);
+            
+            // Act / Assert
+            Assert.Null(await this._productService.RetireProduct(Guid.NewGuid()));
         }
 
         [Fact]
         public void RetireProduct_RemovesProductFromCategory()
         {
+            // Arrange
             var product = new Domain.Repositories.Models.Product(
                 "product", "desc", 12.00, new Domain.Repositories.Models.Category(Guid.NewGuid(), "category", "desc"));
-            this.ProductRepository.Get(product.Id).Returns(product);
+            this._productRepository.Get(product.Id).Returns(product);
 
 
             var category = new Category("category", "desc");
-            this.CategoryRepository.GetByProductId(product.Id)
+            this._categoryRepository.GetByProductId(product.Id)
                 .Returns(category);
 
-            this.ProductService.RetireProduct(product.Id);
+            // Act
+            this._productService.RetireProduct(product.Id);
 
-            this.CategoryRepository.Received().GetByProductId(product.Id);
-            this.CategoryRepository.Save(category);
-            this.ProductRepository.AddOrUpdate(product);
+            // Assert
+            this._categoryRepository.Received().GetByProductId(product.Id);
+            this._categoryRepository.Save(category);
+            this._productRepository.AddOrUpdate(product);
         }
 
         [Fact]
         public async void UpdateProduct_ReturnsNullIfProductCannotBeFound()
         {
-            this.ProductRepository.Get(Arg.Any<Guid>()).Returns(null as Domain.Repositories.Models.Product);
-            Assert.Null(await this.ProductService.UpdateProduct(Guid.NewGuid(), new Product()));
+            // Arrange
+            this._productRepository.Get(Arg.Any<Guid>()).Returns(null as Domain.Repositories.Models.Product);
+            
+            // Act / Assert
+            Assert.Null(await this._productService.UpdateProduct(Guid.NewGuid(), new Product()));
         }
 
         [Fact]
         public async void UpdateProduct_ThrowsExceptionIfCategoryCouldNotBeFoundForProduct()
         {
+            // Arrange
             var category = new Domain.Repositories.Models.Category(Guid.NewGuid(), "category", "desc");
             var product = new Domain.Repositories.Models.Product("product", "desc", 10.00, category);
 
-            this.ProductRepository.Get(Arg.Any<Guid>()).Returns(product);
-            this.CategoryRepository.GetByProductId(product.Id).Returns(null as Category);
+            this._productRepository.Get(Arg.Any<Guid>()).Returns(product);
+            this._categoryRepository.GetByProductId(product.Id).Returns(null as Category);
 
+            // Act / Assert
             await Assert.ThrowsAsync<ProductServiceException>(() =>
-                this.ProductService.UpdateProduct(product.Id, new Product()));
+                this._productService.UpdateProduct(product.Id, new Product()));
         }
 
         [Fact]
         public async void UpdateProduct_ThrowsExceptionIfUpdatedCategoryIsInvalid()
         {
+            // Arrange
             var oldCategory = new Category("category", "desc");
             var product = new Domain.Repositories.Models.Product(
                 "product",
@@ -92,20 +106,22 @@ namespace Answer.King.Api.UnitTests.Services
 
             var updatedCategory = new Category("updated category", "desc");
 
-            this.ProductRepository.Get(Arg.Any<Guid>()).Returns(product);
-            this.CategoryRepository.GetByProductId(product.Id).Returns(oldCategory);
-            this.CategoryRepository.Get(updatedCategory.Id).Returns(null as Category);
+            this._productRepository.Get(Arg.Any<Guid>()).Returns(product);
+            this._categoryRepository.GetByProductId(product.Id).Returns(oldCategory);
+            this._categoryRepository.Get(updatedCategory.Id).Returns(null as Category);
 
-            var updatedProduct = new Product() {Category = new CategoryId {Id = updatedCategory.Id}};
+            var updatedProduct = new Product {Category = new CategoryId {Id = updatedCategory.Id}};
+            
+            // Act / Assert
             await Assert.ThrowsAsync<ProductServiceException>(() =>
-                this.ProductService.UpdateProduct(product.Id, updatedProduct));
+                this._productService.UpdateProduct(product.Id, updatedProduct));
         }
 
         #region Setup
 
-        private readonly ICategoryRepository CategoryRepository = Substitute.For<ICategoryRepository>();
-        private readonly IProductRepository ProductRepository = Substitute.For<IProductRepository>();
-        private readonly IProductService ProductService;
+        private readonly ICategoryRepository _categoryRepository = Substitute.For<ICategoryRepository>();
+        private readonly IProductRepository _productRepository = Substitute.For<IProductRepository>();
+        private readonly IProductService _productService;
 
         #endregion
     }

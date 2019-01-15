@@ -15,33 +15,39 @@ namespace Answer.King.Api.UnitTests.Services
     {
         public PaymentServiceTests()
         {
-            this.PaymentService = new PaymentService(this.PaymentRepository, this.OrderRepository);
+            this._paymentService = new PaymentService(this._paymentRepository, this._orderRepository);
         }
 
         [Fact]
         public async void MakePayment_ThrowsExceptionIfOrderCannotBeFound()
         {
-            this.OrderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
-            await Assert.ThrowsAsync<PaymentServiceException>(() => this.PaymentService.MakePayment(new MakePayment()));
+            // Arrange
+            this._orderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
+            
+            // Act / Assert
+            await Assert.ThrowsAsync<PaymentServiceException>(() => this._paymentService.MakePayment(new MakePayment()));
         }
 
         [Fact]
         public async void MakePayment_ThrowsExceptionWhenPaymentAmountIsLessThanOrderTotal()
         {
+            // Arrange
             var order = new Order();
             order.AddLineItem(Guid.NewGuid(), "product", "desc", 12.00,
                 new Category(Guid.NewGuid(), "category", "desc"), 2);
 
             var makePayment = new MakePayment {OrderId = order.Id, Amount = 20.00};
 
-            this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
+            this._orderRepository.Get(Arg.Any<Guid>()).Returns(order);
 
-            await Assert.ThrowsAsync<PaymentServiceException>(() => this.PaymentService.MakePayment(makePayment));
+            // Act / Assert
+            await Assert.ThrowsAsync<PaymentServiceException>(() => this._paymentService.MakePayment(makePayment));
         }
 
         [Fact]
         public async void MakePayment_ThrowsExceptionWhenOrderIsAlreadyPaid()
         {
+            // Arrange
             var order = new Order();
             order.AddLineItem(Guid.NewGuid(), "product", "desc", 12.00,
                 new Category(Guid.NewGuid(), "category", "desc"), 2);
@@ -49,27 +55,31 @@ namespace Answer.King.Api.UnitTests.Services
 
             var makePayment = new MakePayment {OrderId = order.Id, Amount = 24.00};
 
-            this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
+            this._orderRepository.Get(Arg.Any<Guid>()).Returns(order);
 
-            await Assert.ThrowsAsync<PaymentServiceException>(() => this.PaymentService.MakePayment(makePayment));
+            // Act / Assert
+            await Assert.ThrowsAsync<PaymentServiceException>(() => this._paymentService.MakePayment(makePayment));
         }
 
         [Fact]
         public async void MakePayment_ThrowsExceptionWhenOrderIsCancelled()
         {
+            // Arrange
             var order = new Order();
             order.CancelOrder();
 
             var makePayment = new MakePayment {OrderId = order.Id, Amount = 24.00};
 
-            this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
+            this._orderRepository.Get(Arg.Any<Guid>()).Returns(order);
 
-            await Assert.ThrowsAsync<PaymentServiceException>(() => this.PaymentService.MakePayment(makePayment));
+            // Act / Assert
+            await Assert.ThrowsAsync<PaymentServiceException>(() => this._paymentService.MakePayment(makePayment));
         }
 
         [Fact]
         public async void MakePayment_SuccessfullyPaysOrderAndReturnsPayment()
         {
+            // Arrange
             var order = new Order();
             order.AddLineItem(Guid.NewGuid(), "product", "desc", 12.00,
                 new Category(Guid.NewGuid(), "category", "desc"), 2);
@@ -77,12 +87,14 @@ namespace Answer.King.Api.UnitTests.Services
             var makePayment = new MakePayment {OrderId = order.Id, Amount = 24.00};
             var expectedPayment = new Payment(order.Id, makePayment.Amount, order.OrderTotal);
 
-            this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
+            this._orderRepository.Get(Arg.Any<Guid>()).Returns(order);
 
-            var payment = await this.PaymentService.MakePayment(makePayment);
+            // Act
+            var payment = await this._paymentService.MakePayment(makePayment);
 
-            await this.OrderRepository.Received().Save(order);
-            await this.PaymentRepository.Received().Add(payment);
+            // Assert
+            await this._orderRepository.Received().Save(order);
+            await this._paymentRepository.Received().Add(payment);
 
             Assert.Equal(expectedPayment.Amount, payment.Amount);
             Assert.Equal(expectedPayment.Change, payment.Change);
@@ -92,9 +104,9 @@ namespace Answer.King.Api.UnitTests.Services
 
         #region Setup
 
-        private readonly IPaymentRepository PaymentRepository = Substitute.For<IPaymentRepository>();
-        private readonly IOrderRepository OrderRepository = Substitute.For<IOrderRepository>();
-        private readonly IPaymentService PaymentService;
+        private readonly IPaymentRepository _paymentRepository = Substitute.For<IPaymentRepository>();
+        private readonly IOrderRepository _orderRepository = Substitute.For<IOrderRepository>();
+        private readonly IPaymentService _paymentService;
 
         #endregion
     }

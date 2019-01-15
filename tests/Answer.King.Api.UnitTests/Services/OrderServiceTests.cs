@@ -18,39 +18,39 @@ namespace Answer.King.Api.UnitTests.Services
     {
         public OrderServiceTests()
         {
-            this.OrderService = new OrderService(this.OrderRepository, this.ProductRepository);
+            this._orderService = new OrderService(this._orderRepository, this._productRepository);
         }
 
         [Fact]
         public async void CreateOrder_ThrowsExceptionForSubmittingInvalidProducts()
         {
-            var productId1 = Guid.NewGuid();
-            var productId2 = Guid.NewGuid();
-
+            // Arrange
             var lineItem1 = new LineItem
             {
-                Product = new ProductId {Id = productId1},
+                Product = new ProductId {Id = Guid.NewGuid()},
                 Quantity = 1
             };
 
             var lineItem2 = new LineItem
             {
-                Product = new ProductId {Id = productId2},
+                Product = new ProductId {Id = Guid.NewGuid()},
                 Quantity = 1
             };
 
-            var orderRequest = new RequestModels.Order()
+            var orderRequest = new RequestModels.Order
             {
                 LineItems = new List<LineItem>(new[] {lineItem1, lineItem2})
             };
 
-            await Assert.ThrowsAsync<ProductInvalidException>(() => OrderService.CreateOrder(orderRequest));
+            // Act / Assert
+            await Assert.ThrowsAsync<ProductInvalidException>(() => this._orderService.CreateOrder(orderRequest));
         }
 
 
         [Fact]
         public async void CreateOrder_SuccessfullyCreatesAndSaves()
         {
+            // Arrange
             var category = new Category(Guid.NewGuid(), "Cat 1", "desc");
             var products = new[]
             {
@@ -67,10 +67,12 @@ namespace Answer.King.Api.UnitTests.Services
                 })
             };
 
-            this.ProductRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
+            this._productRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
 
-            var createdOrder = await this.OrderService.CreateOrder(orderRequest);
+            // Act
+            var createdOrder = await this._orderService.CreateOrder(orderRequest);
 
+            // Assert
             Assert.Equal(2, createdOrder.LineItems.Count);
             Assert.Equal(12.0, createdOrder.OrderTotal);
         }
@@ -78,24 +80,32 @@ namespace Answer.King.Api.UnitTests.Services
         [Fact]
         public async void CancelOrder_ReturnsNullWhenInvalidOrderId()
         {
-            this.OrderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
+            // Arrange
+            this._orderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
 
-            var cancelOrder = await OrderService.CancelOrder(Guid.NewGuid());
+            // Act
+            var cancelOrder = await this._orderService.CancelOrder(Guid.NewGuid());
+
+            // Assert
             Assert.Null(cancelOrder);
         }
 
         [Fact]
         public async void UpdateOrder_ReturnsNullIfOrderDoesntExist()
         {
-            this.OrderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
-            Assert.Null(await this.OrderService.UpdateOrder(Guid.NewGuid(), new RequestModels.Order()));
+            // Arrange
+            this._orderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
+
+            // Act / Assert
+            Assert.Null(await this._orderService.UpdateOrder(Guid.NewGuid(), new RequestModels.Order()));
         }
 
         [Fact]
         public async void UpdateOrder_Success()
         {
+            // Arrange
             var order = new Order();
-            this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
+            this._orderRepository.Get(Arg.Any<Guid>()).Returns(order);
 
             var category = new Category(Guid.NewGuid(), "Cat 1", "desc");
             var products = new[]
@@ -112,11 +122,13 @@ namespace Answer.King.Api.UnitTests.Services
                 })
             };
 
-            this.ProductRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
+            this._productRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
 
-            var updatedOrder = await this.OrderService.UpdateOrder(Guid.NewGuid(), orderRequest);
+            // Act
+            var updatedOrder = await this._orderService.UpdateOrder(Guid.NewGuid(), orderRequest);
 
-            await this.OrderRepository.Received().Save(Arg.Any<Order>());
+            // Assert
+            await this._orderRepository.Received().Save(Arg.Any<Order>());
 
             Assert.Equal(1, updatedOrder.LineItems.Count);
             Assert.Equal(8.0, updatedOrder.OrderTotal);
@@ -125,8 +137,9 @@ namespace Answer.King.Api.UnitTests.Services
         [Fact]
         public async void UpdateOrder_ThrowsExceptionIfSubmittedProductIsInvalid()
         {
+            // Arrange
             var order = new Order();
-            this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
+            this._orderRepository.Get(Arg.Any<Guid>()).Returns(order);
 
             var category = new Category(Guid.NewGuid(), "Cat 1", "desc");
             var products = new[]
@@ -143,17 +156,18 @@ namespace Answer.King.Api.UnitTests.Services
                 })
             };
 
-            this.ProductRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
+            this._productRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
 
+            // Act / Assert
             await Assert.ThrowsAsync<ProductInvalidException>(() =>
-                this.OrderService.UpdateOrder(Guid.NewGuid(), orderRequest));
+                this._orderService.UpdateOrder(Guid.NewGuid(), orderRequest));
         }
 
         #region Setup
 
-        private readonly IOrderRepository OrderRepository = Substitute.For<IOrderRepository>();
-        private readonly IProductRepository ProductRepository = Substitute.For<IProductRepository>();
-        private readonly IOrderService OrderService;
+        private readonly IOrderRepository _orderRepository = Substitute.For<IOrderRepository>();
+        private readonly IProductRepository _productRepository = Substitute.For<IProductRepository>();
+        private readonly IOrderService _orderService;
 
         #endregion
     }

@@ -18,17 +18,23 @@ namespace Answer.King.Api.UnitTests.Services
         [Fact]
         public async void RetireCategory_ReturnsNullIfCategoryNotFound()
         {
+            // Arrange
             this._categoryRepository.Get(Arg.Any<Guid>()).Returns(null as Category);
+          
+            // Act / Assert
             Assert.Null(await this._categoryService.RetireCategory(Guid.NewGuid()));
         }
 
         [Fact]
         public async void RetireCategory_ThrowsExceptionIfProductsAreStillAssociatedWithCategory()
         {
+            // Arrange
             var category = new Category("category", "desc");
             category.AddProduct(new ProductId(Guid.NewGuid()));
 
             this._categoryRepository.Get(category.Id).Returns(category);
+            
+            // Act / Assert
             await Assert.ThrowsAsync<CategoryServiceException>(() =>
                 this._categoryService.RetireCategory(category.Id));
         }
@@ -36,11 +42,14 @@ namespace Answer.King.Api.UnitTests.Services
         [Fact]
         public async void RetireCategory_CategoryIsSavedAsRetired()
         {
+            // Arrange
             var category = new Category("category", "desc");
             this._categoryRepository.Get(category.Id).Returns(category);
             
+            // Act
             var retiredCategory = await this._categoryService.RetireCategory(category.Id);
 
+            // Assert
             Assert.True(retiredCategory.Retired);
         }
         
