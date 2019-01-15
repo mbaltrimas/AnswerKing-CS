@@ -1,6 +1,7 @@
 using System;
 using Answer.King.Api.RequestModels;
 using Answer.King.Api.Services;
+using Answer.King.Domain;
 using Answer.King.Domain.Repositories;
 using Answer.King.Test.Common.CustomTraits;
 using NSubstitute;
@@ -12,10 +13,6 @@ namespace Answer.King.Api.UnitTests.Services
     [TestCategory(TestType.Unit)]
     public class ProductServiceTests
     {
-        private readonly ICategoryRepository CategoryRepository = Substitute.For<ICategoryRepository>();
-        private readonly IProductRepository ProductRepository = Substitute.For<IProductRepository>();
-        private readonly IProductService ProductService;
-
         public ProductServiceTests()
         {
             this.ProductService = new ProductService(this.ProductRepository, this.CategoryRepository);
@@ -103,5 +100,13 @@ namespace Answer.King.Api.UnitTests.Services
             await Assert.ThrowsAsync<ProductServiceException>(() =>
                 this.ProductService.UpdateProduct(product.Id, updatedProduct));
         }
+
+        #region Setup
+
+        private readonly ICategoryRepository CategoryRepository = Substitute.For<ICategoryRepository>();
+        private readonly IProductRepository ProductRepository = Substitute.For<IProductRepository>();
+        private readonly IProductService ProductService;
+
+        #endregion
     }
 }

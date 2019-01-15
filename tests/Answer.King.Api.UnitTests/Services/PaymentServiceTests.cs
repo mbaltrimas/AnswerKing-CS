@@ -13,10 +13,6 @@ namespace Answer.King.Api.UnitTests.Services
 {
     public class PaymentServiceTests
     {
-        private readonly IPaymentRepository PaymentRepository = Substitute.For<IPaymentRepository>();
-        private readonly IOrderRepository OrderRepository = Substitute.For<IOrderRepository>();
-        private readonly IPaymentService PaymentService;
-
         public PaymentServiceTests()
         {
             this.PaymentService = new PaymentService(this.PaymentRepository, this.OrderRepository);
@@ -93,5 +89,13 @@ namespace Answer.King.Api.UnitTests.Services
             Assert.Equal(expectedPayment.OrderTotal, payment.OrderTotal);
             Assert.Equal(expectedPayment.OrderId, payment.OrderId);
         }
+
+        #region Setup
+
+        private readonly IPaymentRepository PaymentRepository = Substitute.For<IPaymentRepository>();
+        private readonly IOrderRepository OrderRepository = Substitute.For<IOrderRepository>();
+        private readonly IPaymentService PaymentService;
+
+        #endregion
     }
 }

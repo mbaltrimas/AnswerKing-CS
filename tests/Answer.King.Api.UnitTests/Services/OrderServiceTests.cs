@@ -16,15 +16,11 @@ namespace Answer.King.Api.UnitTests.Services
     [TestCategory(TestType.Unit)]
     public class OrderServiceTests
     {
-        private readonly IOrderRepository OrderRepository = Substitute.For<IOrderRepository>();
-        private readonly IProductRepository ProductRepository = Substitute.For<IProductRepository>();
-        private readonly IOrderService OrderService;
-
         public OrderServiceTests()
         {
             this.OrderService = new OrderService(this.OrderRepository, this.ProductRepository);
         }
-        
+
         [Fact]
         public async void CreateOrder_ThrowsExceptionForSubmittingInvalidProducts()
         {
@@ -100,7 +96,7 @@ namespace Answer.King.Api.UnitTests.Services
         {
             var order = new Order();
             this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
-            
+
             var category = new Category(Guid.NewGuid(), "Cat 1", "desc");
             var products = new[]
             {
@@ -121,17 +117,17 @@ namespace Answer.King.Api.UnitTests.Services
             var updatedOrder = await this.OrderService.UpdateOrder(Guid.NewGuid(), orderRequest);
 
             await this.OrderRepository.Received().Save(Arg.Any<Order>());
-            
+
             Assert.Equal(1, updatedOrder.LineItems.Count);
             Assert.Equal(8.0, updatedOrder.OrderTotal);
         }
-        
+
         [Fact]
         public async void UpdateOrder_ThrowsExceptionIfSubmittedProductIsInvalid()
         {
             var order = new Order();
             this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
-            
+
             var category = new Category(Guid.NewGuid(), "Cat 1", "desc");
             var products = new[]
             {
@@ -151,7 +147,14 @@ namespace Answer.King.Api.UnitTests.Services
 
             await Assert.ThrowsAsync<ProductInvalidException>(() =>
                 this.OrderService.UpdateOrder(Guid.NewGuid(), orderRequest));
-
         }
+
+        #region Setup
+
+        private readonly IOrderRepository OrderRepository = Substitute.For<IOrderRepository>();
+        private readonly IProductRepository ProductRepository = Substitute.For<IProductRepository>();
+        private readonly IOrderService OrderService;
+
+        #endregion
     }
 }
