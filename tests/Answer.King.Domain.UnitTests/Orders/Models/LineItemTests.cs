@@ -36,6 +36,17 @@ namespace Answer.King.Domain.UnitTests.Orders.Models
         }
 
         [Fact]
+        public void AddQuantity_AddZero_ThrowsLineItemException()
+        {
+            // Arrange
+            var product = GetProduct();
+            var lineItem = new LineItem(product);
+
+            // Act / Assert
+            Assert.Throws<LineItemException>(() => lineItem.AddQuantity(0));
+        }
+
+        [Fact]
         public void AddQuantity_InvalidQuantity_ThrowsLineItemException()
         {
             // Arrange
@@ -75,6 +86,33 @@ namespace Answer.King.Domain.UnitTests.Orders.Models
 
             // Act / Assert
             Assert.Throws<LineItemException>(() => lineItem.RemoveQuantity(quantity));
+        }
+
+        [Fact]
+        public void RemoveQuantity_RemoveZero_ThrowsLineItemException()
+        {
+            // Arrange
+            var product = GetProduct();
+            var lineItem = new LineItem(product);
+
+            // Act / Assert
+            Assert.Throws<LineItemException>(() => lineItem.RemoveQuantity(0));
+        }
+        
+        [Fact]
+        public void RemoveQuantity_RemoveMoreThanQuantity_ThrowsLineItemException()
+        {
+            // Arrange
+            var product = GetProduct();
+            var lineItem = new LineItem(product);
+            var quantity = 1;
+            var moreThanQuantity = 3;
+            
+            // Act
+            lineItem.AddQuantity(quantity);
+
+            // Act / Assert
+            Assert.Throws<LineItemException>(() => lineItem.RemoveQuantity(moreThanQuantity));
         }
 
         [Fact]

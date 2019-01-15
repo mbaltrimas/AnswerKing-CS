@@ -19,7 +19,7 @@ namespace Answer.King.Domain.Orders.Models
 
         public void AddQuantity(int quantity)
         {
-            if (quantity < 0)
+            if (quantity < 1)
             {
                 throw new LineItemException("Cannot add less than 1 to the quantity.");
             }
@@ -28,12 +28,12 @@ namespace Answer.King.Domain.Orders.Models
 
         public void RemoveQuantity(int quantity)
         {
-            if (quantity < 0)
+            if (quantity < 1)
             {
                 throw new LineItemException("Cannot remove less than 1 from the quantity.");
             }
 
-            if (this.Quantity == 0)
+            if (this.Quantity < quantity)
             {
                 throw new LineItemException($"Cannot remove {quantity} from {this.Quantity}.");
             }
