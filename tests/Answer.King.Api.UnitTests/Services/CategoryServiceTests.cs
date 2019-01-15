@@ -52,6 +52,66 @@ namespace Answer.King.Api.UnitTests.Services
             // Assert
             Assert.True(retiredCategory.Retired);
         }
+
+        [Fact]
+        public async void CreateCategory_ValidCategory_ReturnsNewlyCreatedCategory()
+        {
+            // Arrange
+            var request = new RequestModels.Category
+            {
+                Name = "category",
+                Description = "desc"
+            };
+
+            // Act
+            var category = await this._categoryService.CreateCategory(request);
+            
+            // Assert
+            Assert.Equal(request.Name, category.Name);
+            Assert.Equal(request.Description, category.Description);
+
+            await this._categoryRepository.Received().Save(Arg.Any<Category>());
+        }
+        
+        [Fact]
+        public async void UpdateCategory_InvalidCategoryId_ReturnsNull()
+        {
+            // Arrange
+            var updateCategoryRequest = new RequestModels.Category();
+            var categoryId = Guid.NewGuid();
+            
+            // Act
+            var category = await this._categoryService.UpdateCategory(categoryId, updateCategoryRequest);
+            
+            // Assert
+            Assert.Null(category);
+        }
+        
+        [Fact]
+        public async void UpdateCategory_ValidCategoryIdAndRequest_ReturnsUpdatedCategory()
+        {
+            // Arrange
+            var oldCategory = new Category("old category", "old desc");
+            var categoryId = oldCategory.Id;
+            
+            var updateCategoryRequest = new RequestModels.Category
+            {
+                Name = "updated category",
+                Description = "updated desc"
+            };
+
+            this._categoryRepository.Get(categoryId).Returns(oldCategory);
+            
+            // Act
+            var actualCategory = await this._categoryService.UpdateCategory(categoryId, updateCategoryRequest);
+            
+            // Assert
+            Assert.Equal(updateCategoryRequest.Name, actualCategory.Name);
+            Assert.Equal(updateCategoryRequest.Description, actualCategory.Description);
+
+            await this._categoryRepository.Received().Get(categoryId);
+            await this._categoryRepository.Received().Save(Arg.Any<Category>());
+        }
         
         #region Setup
         
