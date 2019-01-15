@@ -23,7 +23,7 @@ namespace Answer.King.Api.UnitTests.Services
         public async void RetireCategory_ReturnsNullIfCategoryNotFound()
         {
             this.CategoryRepository.Get(Arg.Any<Guid>()).Returns(null as Category);
-            Assert.Null(await this.CategoryService.GetCategory(Guid.NewGuid()));
+            Assert.Null(await this.CategoryService.RetireCategory(Guid.NewGuid()));
         }
 
         [Fact]
