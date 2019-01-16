@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Answer.King.Api.Services;
 using Answer.King.Domain.Repositories;
 using Answer.King.Infrastructure;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using FluentValidation.AspNetCore;
 
+[assembly: InternalsVisibleTo("Answer.King.Api.UnitTests")]
 namespace Answer.King.Api
 {
     public class Startup

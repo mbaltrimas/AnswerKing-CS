@@ -81,7 +81,7 @@ namespace Answer.King.Api.Services
     }
 
     [Serializable]
-    public class CategoryServiceException : Exception
+    internal class CategoryServiceException : Exception
     {
         public CategoryServiceException(string message, Exception innerException) : base(message, innerException)
         {

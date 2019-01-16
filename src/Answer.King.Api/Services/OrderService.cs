@@ -113,7 +113,7 @@ namespace Answer.King.Api.Services
     }
 
     [Serializable]
-    public class ProductInvalidException : Exception
+    internal class ProductInvalidException : Exception
     {
         public ProductInvalidException(string message) : base(message)
         {

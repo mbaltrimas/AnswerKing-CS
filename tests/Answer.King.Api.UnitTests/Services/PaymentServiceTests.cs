@@ -24,8 +24,9 @@ namespace Answer.King.Api.UnitTests.Services
             this.OrderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
 
             // Act / Assert
+            var sut = this.GetServiceUnderTest();
             await Assert.ThrowsAsync<PaymentServiceException>(() =>
-                this.GetServiceUnderTest().MakePayment(new MakePayment()));
+                sut.MakePayment(new MakePayment()));
         }
 
         [Fact]
@@ -41,8 +42,9 @@ namespace Answer.King.Api.UnitTests.Services
             this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
 
             // Act / Assert
+            var sut = this.GetServiceUnderTest();
             await Assert.ThrowsAsync<PaymentServiceException>(() =>
-                this.GetServiceUnderTest().MakePayment(makePayment));
+                sut.MakePayment(makePayment));
         }
 
         [Fact]
@@ -59,8 +61,9 @@ namespace Answer.King.Api.UnitTests.Services
             this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
 
             // Act / Assert
+            var sut = this.GetServiceUnderTest();
             await Assert.ThrowsAsync<PaymentServiceException>(() =>
-                this.GetServiceUnderTest().MakePayment(makePayment));
+                sut.MakePayment(makePayment));
         }
 
         [Fact]
@@ -75,8 +78,9 @@ namespace Answer.King.Api.UnitTests.Services
             this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
 
             // Act / Assert
+            var sut = this.GetServiceUnderTest();
             await Assert.ThrowsAsync<PaymentServiceException>(() =>
-                this.GetServiceUnderTest().MakePayment(makePayment));
+                sut.MakePayment(makePayment));
         }
 
         [Fact]
@@ -93,7 +97,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
 
             // Act
-            var payment = await this.GetServiceUnderTest().MakePayment(makePayment);
+            var sut = this.GetServiceUnderTest();
+            var payment = await sut.MakePayment(makePayment);
 
             // Assert
             await this.OrderRepository.Received().Save(order);
@@ -122,7 +127,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.PaymentRepository.Get().Returns(payments);
 
             // Act
-            var actualPayments = await this.GetServiceUnderTest().GetPayments();
+            var sut = this.GetServiceUnderTest();
+            var actualPayments = await sut.GetPayments();
 
             // Assert
             Assert.Equal(payments, actualPayments);
@@ -138,7 +144,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.PaymentRepository.Get(payment.Id).Returns(payment);
 
             // Act
-            var actualPayment = await this.GetServiceUnderTest().GetPayment(payment.Id);
+            var sut = this.GetServiceUnderTest();
+            var actualPayment = await sut.GetPayment(payment.Id);
 
             // Assert
             Assert.Equal(payment, actualPayment);

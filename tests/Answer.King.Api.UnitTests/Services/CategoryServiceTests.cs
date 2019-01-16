@@ -21,7 +21,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.CategoryRepository.Get(Arg.Any<Guid>()).Returns(null as Category);
 
             // Act / Assert
-            Assert.Null(await this.GetServiceUnderTest().RetireCategory(Guid.NewGuid()));
+            var sut = this.GetServiceUnderTest();
+            Assert.Null(await sut.RetireCategory(Guid.NewGuid()));
         }
 
         [Fact]
@@ -34,8 +35,9 @@ namespace Answer.King.Api.UnitTests.Services
             this.CategoryRepository.Get(category.Id).Returns(category);
 
             // Act / Assert
+            var sut = this.GetServiceUnderTest();
             await Assert.ThrowsAsync<CategoryServiceException>(() =>
-                this.GetServiceUnderTest().RetireCategory(category.Id));
+                sut.RetireCategory(category.Id));
         }
 
         [Fact]
@@ -46,7 +48,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.CategoryRepository.Get(category.Id).Returns(category);
 
             // Act
-            var retiredCategory = await this.GetServiceUnderTest().RetireCategory(category.Id);
+            var sut = this.GetServiceUnderTest();
+            var retiredCategory = await sut.RetireCategory(category.Id);
 
             // Assert
             Assert.True(retiredCategory.Retired);
@@ -67,7 +70,8 @@ namespace Answer.King.Api.UnitTests.Services
             };
 
             // Act
-            var category = await this.GetServiceUnderTest().CreateCategory(request);
+            var sut = this.GetServiceUnderTest();
+            var category = await sut.CreateCategory(request);
 
             // Assert
             Assert.Equal(request.Name, category.Name);
@@ -90,7 +94,8 @@ namespace Answer.King.Api.UnitTests.Services
             CategoryRepository.Get(id).Returns(category);
 
             // Act
-            var actualCategory = await this.GetServiceUnderTest().GetCategory(id);
+            var sut = this.GetServiceUnderTest();
+            var actualCategory = await sut.GetCategory(id);
 
             // Assert
             Assert.Equal(category, actualCategory);
@@ -110,7 +115,8 @@ namespace Answer.King.Api.UnitTests.Services
             CategoryRepository.Get().Returns(categories);
 
             // Act
-            var actualCategories = await this.GetServiceUnderTest().GetCategories();
+            var sut = this.GetServiceUnderTest();
+            var actualCategories = await sut.GetCategories();
 
             // Assert
             Assert.Equal(categories, actualCategories);
@@ -129,7 +135,8 @@ namespace Answer.King.Api.UnitTests.Services
             var categoryId = Guid.NewGuid();
 
             // Act
-            var category = await this.GetServiceUnderTest().UpdateCategory(categoryId, updateCategoryRequest);
+            var sut = this.GetServiceUnderTest();
+            var category = await sut.UpdateCategory(categoryId, updateCategoryRequest);
 
             // Assert
             Assert.Null(category);
@@ -151,7 +158,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.CategoryRepository.Get(categoryId).Returns(oldCategory);
 
             // Act
-            var actualCategory = await this.GetServiceUnderTest().UpdateCategory(categoryId, updateCategoryRequest);
+            var sut = this.GetServiceUnderTest();
+            var actualCategory = await sut.UpdateCategory(categoryId, updateCategoryRequest);
 
             // Assert
             Assert.Equal(updateCategoryRequest.Name, actualCategory.Name);

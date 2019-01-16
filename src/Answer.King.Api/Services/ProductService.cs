@@ -131,7 +131,7 @@ namespace Answer.King.Api.Services
     }
 
     [Serializable]
-    public class ProductServiceException : Exception
+    internal class ProductServiceException : Exception
     {
         public ProductServiceException(string message) : base(message)
         {

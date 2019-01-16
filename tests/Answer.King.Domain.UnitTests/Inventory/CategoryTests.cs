@@ -10,7 +10,7 @@ namespace Answer.King.Domain.UnitTests.Inventory
     public class CategoryTests
     {
         [Fact]
-        public void RenameCategory_WithValidNameAndDescription()
+        public void RenameCategory_WithValidNameAndDescription_ReturnsExpectedResult()
         {
             var category = new Category("Phones", "Electronics");
 
@@ -21,35 +21,35 @@ namespace Answer.King.Domain.UnitTests.Inventory
         }
 
         [Fact]
-        public void RenameCategory_InvalidNameThrowsExceptionWhenNull()
+        public void RenameCategory_WithInvalidName_ThrowsException()
         {
             var category = new Category("Phones", "Electronics");
             Assert.Throws<ArgumentNullException>(() => category.Rename(null, "Electronics"));
         }
         
         [Fact]
-        public void RenameCategory_InvalidNameThrowsExceptionWhenEmpty()
+        public void RenameCategory_WithBlankName_ThrowsException()
         {
             var category = new Category("Phones", "Electronics");
             Assert.Throws<Guard.EmptyStringException>(() => category.Rename("", "Electronics"));
         }
         
         [Fact]
-        public void RenameCategory_InvalidDescriptionThrowsExceptionWhenNull()
+        public void RenameCategory_WithInvalidDescription_ThrowsException()
         {
             var category = new Category("Phones", "Electronics");
             Assert.Throws<ArgumentNullException>(() => category.Rename("Phones", null));
         }
         
         [Fact]
-        public void RenameCategory_InvalidDescriptionThrowsExceptionWhenEmpty()
+        public void RenameCategory_WithBlankDescription_ThrowsException()
         {
             var category = new Category("Phones", "Electronics");
             Assert.Throws<Guard.EmptyStringException>(() => category.Rename("Phones", ""));
         }
 
         [Fact]
-        public void RetireCategory_ThrowsExceptionIfAnyProductAssociatedWithCategory()
+        public void RetireCategory_WithProductsContainedWithinCategory_ThrowsException()
         {
             var category = new Category("Phones", "Electronics");
             category.AddProduct(new ProductId(Guid.NewGuid()));

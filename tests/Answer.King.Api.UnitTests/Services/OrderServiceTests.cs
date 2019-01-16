@@ -40,8 +40,9 @@ namespace Answer.King.Api.UnitTests.Services
             };
 
             // Act / Assert
+            var sut = this.GetServiceUnderTest();
             await Assert.ThrowsAsync<ProductInvalidException>(
-                () => this.GetServiceUnderTest().CreateOrder(orderRequest));
+                () => sut.CreateOrder(orderRequest));
         }
 
 
@@ -68,7 +69,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.ProductRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
 
             // Act
-            var createdOrder = await this.GetServiceUnderTest().CreateOrder(orderRequest);
+            var sut = this.GetServiceUnderTest();
+            var createdOrder = await sut.CreateOrder(orderRequest);
 
             // Assert
             Assert.Equal(2, createdOrder.LineItems.Count);
@@ -86,7 +88,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.OrderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
 
             // Act / Assert
-            Assert.Null(await this.GetServiceUnderTest().UpdateOrder(Guid.NewGuid(), new RequestModels.Order()));
+            var sut = this.GetServiceUnderTest();
+            Assert.Null(await sut.UpdateOrder(Guid.NewGuid(), new RequestModels.Order()));
         }
 
         [Fact]
@@ -114,7 +117,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.ProductRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
 
             // Act
-            var updatedOrder = await this.GetServiceUnderTest().UpdateOrder(Guid.NewGuid(), orderRequest);
+            var sut = this.GetServiceUnderTest();
+            var updatedOrder = await sut.UpdateOrder(Guid.NewGuid(), orderRequest);
 
             // Assert
             await this.OrderRepository.Received().Save(Arg.Any<Order>());
@@ -148,8 +152,9 @@ namespace Answer.King.Api.UnitTests.Services
             this.ProductRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
 
             // Act / Assert
+            var sut = this.GetServiceUnderTest();
             await Assert.ThrowsAsync<ProductInvalidException>(() =>
-                this.GetServiceUnderTest().UpdateOrder(Guid.NewGuid(), orderRequest));
+                sut.UpdateOrder(Guid.NewGuid(), orderRequest));
         }
 
         #endregion
@@ -164,7 +169,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.OrderRepository.Get(order.Id).Returns(order);
 
             // Act
-            var actualOrder = await this.GetServiceUnderTest().GetOrder(order.Id);
+            var sut = this.GetServiceUnderTest();
+            var actualOrder = await sut.GetOrder(order.Id);
 
             // Assert
             Assert.Equal(order, actualOrder);
@@ -183,7 +189,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.OrderRepository.Get().Returns(orders);
 
             // Act
-            var actualOrders = await this.GetServiceUnderTest().GetOrders();
+            var sut = this.GetServiceUnderTest();
+            var actualOrders = await sut.GetOrders();
 
             // Assert
             Assert.Equal(orders, actualOrders);
@@ -201,7 +208,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.OrderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
 
             // Act
-            var cancelOrder = await this.GetServiceUnderTest().CancelOrder(Guid.NewGuid());
+            var sut = this.GetServiceUnderTest();
+            var cancelOrder = await sut.CancelOrder(Guid.NewGuid());
 
             // Assert
             Assert.Null(cancelOrder);

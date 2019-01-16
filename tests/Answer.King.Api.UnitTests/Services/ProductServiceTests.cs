@@ -26,12 +26,11 @@ namespace Answer.King.Api.UnitTests.Services
                 Category = new CategoryId {Id = Guid.NewGuid()}
             };
 
-            // Act
             this.CategoryRepository.Get(Arg.Any<Guid>()).Returns(null as Category);
-
-            // Assert
-            await Assert.ThrowsAsync<ProductServiceException>(() =>
-                this.GetServiceUnderTest().CreateProduct(productRequest));
+                        
+            // Act / Assert
+            var sut = this.GetServiceUnderTest();
+            await Assert.ThrowsAsync<ProductServiceException>(() => sut.CreateProduct(productRequest));
         }
 
         #endregion
@@ -45,7 +44,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.ProductRepository.Get(Arg.Any<Guid>()).Returns(null as Domain.Repositories.Models.Product);
 
             // Act / Assert
-            Assert.Null(await this.GetServiceUnderTest().RetireProduct(Guid.NewGuid()));
+            var sut = this.GetServiceUnderTest();
+            Assert.Null(await sut.RetireProduct(Guid.NewGuid()));
         }
 
         [Fact]
@@ -62,7 +62,8 @@ namespace Answer.King.Api.UnitTests.Services
                 .Returns(category);
 
             // Act
-            var retiredProduct = await this.GetServiceUnderTest().RetireProduct(product.Id);
+            var sut = this.GetServiceUnderTest();
+            var retiredProduct = await sut.RetireProduct(product.Id);
 
             // Assert
             Assert.True(retiredProduct.Retired);
@@ -84,7 +85,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.ProductRepository.Get(Arg.Any<Guid>()).Returns(null as Domain.Repositories.Models.Product);
 
             // Act / Assert
-            Assert.Null(await this.GetServiceUnderTest().UpdateProduct(Guid.NewGuid(), new Product()));
+            var sut = this.GetServiceUnderTest();
+            Assert.Null(await sut.UpdateProduct(Guid.NewGuid(), new Product()));
         }
 
         [Fact]
@@ -98,8 +100,9 @@ namespace Answer.King.Api.UnitTests.Services
             this.CategoryRepository.GetByProductId(product.Id).Returns(null as Category);
 
             // Act / Assert
+            var sut = this.GetServiceUnderTest();
             await Assert.ThrowsAsync<ProductServiceException>(() =>
-                this.GetServiceUnderTest().UpdateProduct(product.Id, new Product()));
+                sut.UpdateProduct(product.Id, new Product()));
         }
 
         [Fact]
@@ -122,8 +125,9 @@ namespace Answer.King.Api.UnitTests.Services
             var updatedProduct = new Product {Category = new CategoryId {Id = updatedCategory.Id}};
 
             // Act / Assert
+            var sut = this.GetServiceUnderTest();
             await Assert.ThrowsAsync<ProductServiceException>(() =>
-                this.GetServiceUnderTest().UpdateProduct(product.Id, updatedProduct));
+                sut.UpdateProduct(product.Id, updatedProduct));
         }
 
         #endregion
@@ -144,7 +148,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.ProductRepository.Get().Returns(products);
 
             // Act
-            var actualProducts = await this.GetServiceUnderTest().GetProducts();
+            var sut = this.GetServiceUnderTest();
+            var actualProducts = await sut.GetProducts();
 
             // Assert
             Assert.Equal(products, actualProducts);
@@ -161,7 +166,8 @@ namespace Answer.King.Api.UnitTests.Services
             this.ProductRepository.Get(product.Id).Returns(product);
 
             // Act
-            var actualProduct = await this.GetServiceUnderTest().GetProduct(product.Id);
+            var sut = this.GetServiceUnderTest();
+            var actualProduct = await sut.GetProduct(product.Id);
 
             // Assert
             Assert.Equal(product, actualProduct);
