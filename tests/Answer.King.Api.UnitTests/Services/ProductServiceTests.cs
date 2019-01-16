@@ -18,7 +18,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void CreateProduct_InvalidCategoryThrowsException()
+        public async void CreateProduct_InvalidCategoryIdInProduct_ThrowsException()
         {
             // Arrange
             var productRequest = new Product
@@ -37,7 +37,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void RetireProduct_ReturnsNullIfProductNotFound()
+        public async void RetireProduct_InvalidProductId_ReturnsNull()
         {
             // Arrange
             this._productRepository.Get(Arg.Any<Guid>()).Returns(null as Domain.Repositories.Models.Product);
@@ -47,7 +47,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public void RetireProduct_RemovesProductFromCategory()
+        public async void RetireProduct_ValidProductId_ReturnsProductAsRetired()
         {
             // Arrange
             var product = new Domain.Repositories.Models.Product(
@@ -60,16 +60,21 @@ namespace Answer.King.Api.UnitTests.Services
                 .Returns(category);
 
             // Act
-            this._productService.RetireProduct(product.Id);
+            var retiredProduct = await this._productService.RetireProduct(product.Id);
 
             // Assert
-            this._categoryRepository.Received().GetByProductId(product.Id);
-            this._categoryRepository.Save(category);
-            this._productRepository.AddOrUpdate(product);
+            Assert.True(retiredProduct.Retired);
+            Assert.Equal(product.Id, retiredProduct.Id);
+            
+            await this._categoryRepository.Received().GetByProductId(product.Id);
+            await this._categoryRepository.Save(category);
+            await this._productRepository.AddOrUpdate(product);
+            
+            
         }
 
         [Fact]
-        public async void UpdateProduct_ReturnsNullIfProductCannotBeFound()
+        public async void UpdateProduct_InvalidProductId_ReturnsNull()
         {
             // Arrange
             this._productRepository.Get(Arg.Any<Guid>()).Returns(null as Domain.Repositories.Models.Product);
@@ -79,7 +84,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void UpdateProduct_ThrowsExceptionIfCategoryCouldNotBeFoundForProduct()
+        public async void UpdateProduct_InvalidProductNotAssociatedWithCategory_ThrowsException()
         {
             // Arrange
             var category = new Domain.Repositories.Models.Category(Guid.NewGuid(), "category", "desc");
@@ -94,7 +99,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void UpdateProduct_ThrowsExceptionIfUpdatedCategoryIsInvalid()
+        public async void UpdateProduct_InvalidUpdatedCategory_ThrowsException()
         {
             // Arrange
             var oldCategory = new Category("category", "desc");

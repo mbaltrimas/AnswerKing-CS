@@ -22,7 +22,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void CreateOrder_ThrowsExceptionForSubmittingInvalidProducts()
+        public async void CreateOrder_InvalidProductsSubmitted_ThrowsException()
         {
             // Arrange
             var lineItem1 = new LineItem
@@ -48,7 +48,7 @@ namespace Answer.King.Api.UnitTests.Services
 
 
         [Fact]
-        public async void CreateOrder_SuccessfullyCreatesAndSaves()
+        public async void CreateOrder_ValidOrderRequestRecieved_ReturnsOrder()
         {
             // Arrange
             var category = new Category(Guid.NewGuid(), "Cat 1", "desc");
@@ -78,7 +78,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void CancelOrder_ReturnsNullWhenInvalidOrderId()
+        public async void CancelOrder_InvalidOrderIdReceived_ReturnsNull()
         {
             // Arrange
             this._orderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
@@ -91,7 +91,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void UpdateOrder_ReturnsNullIfOrderDoesntExist()
+        public async void UpdateOrder_InvalidOrderIdReceived_ReturnsNull()
         {
             // Arrange
             this._orderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
@@ -101,7 +101,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void UpdateOrder_Success()
+        public async void UpdateOrder_ValidOrderRequestReceived_ReturnsUpdatedOrder()
         {
             // Arrange
             var order = new Order();
@@ -135,7 +135,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void UpdateOrder_ThrowsExceptionIfSubmittedProductIsInvalid()
+        public async void UpdateOrder_InvalidProductReceivedInOrder_ThrowsException()
         {
             // Arrange
             var order = new Order();
@@ -152,7 +152,7 @@ namespace Answer.King.Api.UnitTests.Services
             {
                 LineItems = new List<LineItem>(new[]
                 {
-                    new LineItem {Product = new ProductId {Id = Guid.NewGuid()}, Quantity = 4},
+                    new LineItem {Product = new ProductId {Id = Guid.NewGuid()}, Quantity = 4}
                 })
             };
 

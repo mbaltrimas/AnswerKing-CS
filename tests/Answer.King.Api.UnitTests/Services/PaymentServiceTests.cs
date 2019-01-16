@@ -3,6 +3,7 @@ using Answer.King.Api.RequestModels;
 using Answer.King.Api.Services;
 using Answer.King.Domain.Repositories;
 using Answer.King.Domain.Repositories.Models;
+using Answer.King.Test.Common.CustomTraits;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Xunit;
@@ -11,6 +12,7 @@ using Order = Answer.King.Domain.Orders.Order;
 
 namespace Answer.King.Api.UnitTests.Services
 {
+    [TestCategory(TestType.Unit)]
     public class PaymentServiceTests
     {
         public PaymentServiceTests()
@@ -19,17 +21,18 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void MakePayment_ThrowsExceptionIfOrderCannotBeFound()
+        public async void MakePayment_InvalidOrderIdReceived_ThrowsException()
         {
             // Arrange
             this._orderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
-            
+
             // Act / Assert
-            await Assert.ThrowsAsync<PaymentServiceException>(() => this._paymentService.MakePayment(new MakePayment()));
+            await Assert.ThrowsAsync<PaymentServiceException>(() =>
+                this._paymentService.MakePayment(new MakePayment()));
         }
 
         [Fact]
-        public async void MakePayment_ThrowsExceptionWhenPaymentAmountIsLessThanOrderTotal()
+        public async void MakePayment_PaymentAmountLessThanOrderTotal_ThrowsException()
         {
             // Arrange
             var order = new Order();
@@ -45,7 +48,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void MakePayment_ThrowsExceptionWhenOrderIsAlreadyPaid()
+        public async void MakePayment_PaidOrder_ThrowsException()
         {
             // Arrange
             var order = new Order();
@@ -62,7 +65,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void MakePayment_ThrowsExceptionWhenOrderIsCancelled()
+        public async void MakePayment_CancelledOrder_ThrowsException()
         {
             // Arrange
             var order = new Order();
@@ -77,7 +80,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void MakePayment_SuccessfullyPaysOrderAndReturnsPayment()
+        public async void MakePayment_ValidPaymentRequest_ReturnsPayment()
         {
             // Arrange
             var order = new Order();

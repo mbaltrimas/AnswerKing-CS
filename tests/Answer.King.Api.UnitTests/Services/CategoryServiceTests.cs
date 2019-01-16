@@ -3,11 +3,13 @@ using Answer.King.Api.Services;
 using Answer.King.Domain.Inventory;
 using Answer.King.Domain.Inventory.Models;
 using Answer.King.Domain.Repositories;
+using Answer.King.Test.Common.CustomTraits;
 using NSubstitute;
 using Xunit;
 
 namespace Answer.King.Api.UnitTests.Services
 {
+    [TestCategory(TestType.Unit)]
     public class CategoryServiceTests
     {   
         public CategoryServiceTests()
@@ -16,7 +18,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void RetireCategory_ReturnsNullIfCategoryNotFound()
+        public async void RetireCategory_InvalidCategoryIdReceived_ReturnsNull()
         {
             // Arrange
             this._categoryRepository.Get(Arg.Any<Guid>()).Returns(null as Category);
@@ -26,7 +28,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
 
         [Fact]
-        public async void RetireCategory_ThrowsExceptionIfProductsAreStillAssociatedWithCategory()
+        public async void RetireCategory_CategoryContainsProducts_ThrowsException()
         {
             // Arrange
             var category = new Category("category", "desc");
@@ -40,7 +42,7 @@ namespace Answer.King.Api.UnitTests.Services
         }
         
         [Fact]
-        public async void RetireCategory_CategoryIsSavedAsRetired()
+        public async void RetireCategory_NoProductsAssociatedWithCategory_ReturnsRetiredCategory()
         {
             // Arrange
             var category = new Category("category", "desc");
