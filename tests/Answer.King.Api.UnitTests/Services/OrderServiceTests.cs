@@ -16,10 +16,7 @@ namespace Answer.King.Api.UnitTests.Services
     [TestCategory(TestType.Unit)]
     public class OrderServiceTests
     {
-        public OrderServiceTests()
-        {
-            this._orderService = new OrderService(this._orderRepository, this._productRepository);
-        }
+        #region Create
 
         [Fact]
         public async void CreateOrder_InvalidProductsSubmitted_ThrowsException()
@@ -43,7 +40,8 @@ namespace Answer.King.Api.UnitTests.Services
             };
 
             // Act / Assert
-            await Assert.ThrowsAsync<ProductInvalidException>(() => this._orderService.CreateOrder(orderRequest));
+            await Assert.ThrowsAsync<ProductInvalidException>(
+                () => this.GetServiceUnderTest().CreateOrder(orderRequest));
         }
 
 
@@ -67,37 +65,28 @@ namespace Answer.King.Api.UnitTests.Services
                 })
             };
 
-            this._productRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
+            this.ProductRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
 
             // Act
-            var createdOrder = await this._orderService.CreateOrder(orderRequest);
+            var createdOrder = await this.GetServiceUnderTest().CreateOrder(orderRequest);
 
             // Assert
             Assert.Equal(2, createdOrder.LineItems.Count);
             Assert.Equal(12.0, createdOrder.OrderTotal);
         }
 
-        [Fact]
-        public async void CancelOrder_InvalidOrderIdReceived_ReturnsNull()
-        {
-            // Arrange
-            this._orderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
+        #endregion
 
-            // Act
-            var cancelOrder = await this._orderService.CancelOrder(Guid.NewGuid());
-
-            // Assert
-            Assert.Null(cancelOrder);
-        }
+        #region Update
 
         [Fact]
         public async void UpdateOrder_InvalidOrderIdReceived_ReturnsNull()
         {
             // Arrange
-            this._orderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
+            this.OrderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
 
             // Act / Assert
-            Assert.Null(await this._orderService.UpdateOrder(Guid.NewGuid(), new RequestModels.Order()));
+            Assert.Null(await this.GetServiceUnderTest().UpdateOrder(Guid.NewGuid(), new RequestModels.Order()));
         }
 
         [Fact]
@@ -105,7 +94,7 @@ namespace Answer.King.Api.UnitTests.Services
         {
             // Arrange
             var order = new Order();
-            this._orderRepository.Get(Arg.Any<Guid>()).Returns(order);
+            this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
 
             var category = new Category(Guid.NewGuid(), "Cat 1", "desc");
             var products = new[]
@@ -122,13 +111,13 @@ namespace Answer.King.Api.UnitTests.Services
                 })
             };
 
-            this._productRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
+            this.ProductRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
 
             // Act
-            var updatedOrder = await this._orderService.UpdateOrder(Guid.NewGuid(), orderRequest);
+            var updatedOrder = await this.GetServiceUnderTest().UpdateOrder(Guid.NewGuid(), orderRequest);
 
             // Assert
-            await this._orderRepository.Received().Save(Arg.Any<Order>());
+            await this.OrderRepository.Received().Save(Arg.Any<Order>());
 
             Assert.Equal(1, updatedOrder.LineItems.Count);
             Assert.Equal(8.0, updatedOrder.OrderTotal);
@@ -139,7 +128,7 @@ namespace Answer.King.Api.UnitTests.Services
         {
             // Arrange
             var order = new Order();
-            this._orderRepository.Get(Arg.Any<Guid>()).Returns(order);
+            this.OrderRepository.Get(Arg.Any<Guid>()).Returns(order);
 
             var category = new Category(Guid.NewGuid(), "Cat 1", "desc");
             var products = new[]
@@ -156,18 +145,79 @@ namespace Answer.King.Api.UnitTests.Services
                 })
             };
 
-            this._productRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
+            this.ProductRepository.Get(Arg.Any<IList<Guid>>()).Returns(products);
 
             // Act / Assert
             await Assert.ThrowsAsync<ProductInvalidException>(() =>
-                this._orderService.UpdateOrder(Guid.NewGuid(), orderRequest));
+                this.GetServiceUnderTest().UpdateOrder(Guid.NewGuid(), orderRequest));
         }
+
+        #endregion
+
+        #region Get
+
+        [Fact]
+        public async void GetOrder_ValidOrderId_ReturnsOrder()
+        {
+            // Arrange
+            var order = new Order();
+            this.OrderRepository.Get(order.Id).Returns(order);
+
+            // Act
+            var actualOrder = await this.GetServiceUnderTest().GetOrder(order.Id);
+
+            // Assert
+            Assert.Equal(order, actualOrder);
+            await this.OrderRepository.Received().Get(order.Id);
+        }
+
+        [Fact]
+        public async void GetOrders_ReturnsAllOrders()
+        {
+            // Arrange
+            var orders = new[]
+            {
+                new Order(), new Order(),
+            };
+
+            this.OrderRepository.Get().Returns(orders);
+
+            // Act
+            var actualOrders = await this.GetServiceUnderTest().GetOrders();
+
+            // Assert
+            Assert.Equal(orders, actualOrders);
+            await this.OrderRepository.Received().Get();
+        }
+
+        #endregion
+
+        #region Cancel
+
+        [Fact]
+        public async void CancelOrder_InvalidOrderIdReceived_ReturnsNull()
+        {
+            // Arrange
+            this.OrderRepository.Get(Arg.Any<Guid>()).ReturnsNull();
+
+            // Act
+            var cancelOrder = await this.GetServiceUnderTest().CancelOrder(Guid.NewGuid());
+
+            // Assert
+            Assert.Null(cancelOrder);
+        }
+
+        #endregion
 
         #region Setup
 
-        private readonly IOrderRepository _orderRepository = Substitute.For<IOrderRepository>();
-        private readonly IProductRepository _productRepository = Substitute.For<IProductRepository>();
-        private readonly IOrderService _orderService;
+        private readonly IOrderRepository OrderRepository = Substitute.For<IOrderRepository>();
+        private readonly IProductRepository ProductRepository = Substitute.For<IProductRepository>();
+
+        private IOrderService GetServiceUnderTest()
+        {
+            return new OrderService(this.OrderRepository, this.ProductRepository);
+        }
 
         #endregion
     }
