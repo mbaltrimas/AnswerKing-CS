@@ -23,7 +23,7 @@ namespace Answer.King.Infrastructure.SeedData
                 false),
             CategoryFactory.CreateOrder(
                 Guid.Parse("e32701f8-d644-4d5d-bd52-2a31fdaba3df"),
-                "Saundries",
+                "Sundries",
                 "Things that go with things.",
                 DateTime.UtcNow.AddDays(-2),
                 DateTime.UtcNow.AddHours(-30),
