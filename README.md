@@ -9,7 +9,7 @@ Dotnet implementation of the Answer King Api
 
 ## Running the solution
 
-Ensure you have the latest [.NET Core 2.2 SDK (v2.2.101)](https://www.microsoft.com/net/download/) installed.
+Ensure you have the latest [.NET Core 2.2 SDK (v2.2.300)](https://www.microsoft.com/net/download/) installed.
 
 Clone the project:
 
