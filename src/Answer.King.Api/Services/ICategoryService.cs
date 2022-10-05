@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Answer.King.Api.RequestModels;
-using Answer.King.Domain.Inventory;
+﻿using Answer.King.Domain.Inventory;
+using RequestCategory = Answer.King.Api.RequestModels.Category;
 
-namespace Answer.King.Api.Services
+namespace Answer.King.Api.Services;
+
+public interface ICategoryService
 {
-    public interface ICategoryService
-    {
-        Task<Domain.Inventory.Category> CreateCategory(RequestModels.Category createCategory);
-        Task<IEnumerable<Domain.Inventory.Category>> GetCategories();
-        Task<Domain.Inventory.Category> GetCategory(Guid categoryId);
-        Task<Domain.Inventory.Category> RetireCategory(Guid categoryId);
-        Task<Domain.Inventory.Category> UpdateCategory(Guid categoryId, RequestModels.Category updateCategory);
-    }
+    Task<Category> CreateCategory(RequestCategory createCategory);
+    Task<IEnumerable<Category>> GetCategories();
+    Task<Category?> GetCategory(Guid categoryId);
+    Task<Category?> RetireCategory(Guid categoryId);
+    Task<Category?> UpdateCategory(Guid categoryId, RequestCategory updateCategory);
 }

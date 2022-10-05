@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Answer.King.Domain.Repositories.Models;
+﻿using Answer.King.Domain.Repositories.Models;
 
-namespace Answer.King.Domain.Repositories
+namespace Answer.King.Domain.Repositories;
+
+public interface IPaymentRepository
 {
-    public interface IPaymentRepository
-    {
-        Task<Payment> Get(Guid id);
+    Task<Payment> Get(Guid id);
 
-        Task<IEnumerable<Payment>> Get();
+    Task<IEnumerable<Payment>> Get();
 
-        Task Add(Payment payment);
-    }
+    Task Add(Payment payment);
 }

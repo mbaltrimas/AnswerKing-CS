@@ -1,12 +1,9 @@
-﻿using System;
+﻿namespace Answer.King.Domain.Repositories.Models;
 
-namespace Answer.King.Domain.Repositories.Models
+[Serializable]
+public class PaymentException : Exception
 {
-    [Serializable]
-    public class PaymentException : Exception
+    public PaymentException(string message) : base(message)
     {
-        public PaymentException(string message) : base(message)
-        {
-        }
     }
 }

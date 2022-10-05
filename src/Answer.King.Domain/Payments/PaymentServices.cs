@@ -1,10 +1,9 @@
-﻿namespace Answer.King.Domain.Payments
+﻿namespace Answer.King.Domain.Payments;
+
+public class PaymentServices
 {
-    public class PaymentServices
+    public PaymentServices()
     {
-        public PaymentServices()
-        {
             
-        }
     }
 }

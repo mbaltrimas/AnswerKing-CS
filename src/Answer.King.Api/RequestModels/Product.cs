@@ -1,13 +1,12 @@
-﻿namespace Answer.King.Api.RequestModels
+﻿namespace Answer.King.Api.RequestModels;
+
+public record Product
 {
-    public class Product
-    {
-        public string Name { get; set; }
+    public string Name { get; init; } = null!;
 
-        public string Description { get; set; }
+    public string Description { get; init; } = null!;
 
-        public double Price { get; set; }
+    public double Price { get; init; }
 
-        public CategoryId Category { get; set; }
-    }
+    public CategoryId Category { get; init; } = null!;
 }

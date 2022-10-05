@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Answer.King.Domain.Repositories.Models;
 
-namespace Answer.King.Api.Services
+using RequestProduct = Answer.King.Api.RequestModels.Product;
+
+namespace Answer.King.Api.Services;
+
+public interface IProductService
 {
-    public interface IProductService
-    {
-        Task<Domain.Repositories.Models.Product> CreateProduct(RequestModels.Product createProduct);
+    Task<Product> CreateProduct(RequestProduct createProduct);
 
-        Task<Domain.Repositories.Models.Product> GetProduct(Guid productId);
+    Task<Product?> GetProduct(Guid productId);
 
-        Task<IEnumerable<Domain.Repositories.Models.Product>> GetProducts();
+    Task<IEnumerable<Product>> GetProducts();
 
-        Task<IEnumerable<Domain.Repositories.Models.Product>> GetProducts(IEnumerable<Guid> productIds);
+    Task<IEnumerable<Product>> GetProducts(IEnumerable<Guid> productIds);
 
-        Task<Domain.Repositories.Models.Product> RetireProduct(Guid productId);
+    Task<Product?> RetireProduct(Guid productId);
 
-        Task<Domain.Repositories.Models.Product> UpdateProduct(Guid productId, RequestModels.Product updateProduct);
-    }
+    Task<Product?> UpdateProduct(Guid productId, RequestProduct updateProduct);
 }

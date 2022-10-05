@@ -1,9 +1,8 @@
 ﻿using LiteDB;
 
-namespace Answer.King.Infrastructure
+namespace Answer.King.Infrastructure;
+
+public interface ILiteDbConnectionFactory
 {
-    public interface ILiteDbConnectionFactory
-    {
-        LiteDatabase GetConnection();
-    }
+    LiteDatabase GetConnection();
 }

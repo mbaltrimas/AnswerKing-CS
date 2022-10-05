@@ -2,37 +2,36 @@
 using LiteDB;
 using Microsoft.Extensions.Configuration;
 
-namespace Answer.King.Infrastructure
+namespace Answer.King.Infrastructure;
+
+public class LiteDbConnectionFactory : ILiteDbConnectionFactory
 {
-    public class LiteDbConnectionFactory : ILiteDbConnectionFactory
+    public LiteDbConnectionFactory(IConfiguration config)
     {
-        public LiteDbConnectionFactory(IConfiguration config)
+        var connectionString = config.GetConnectionString("AnswerKing");
+
+        if (string.IsNullOrWhiteSpace(connectionString))
         {
-            var connectionString = config.GetConnectionString("AnswerKing");
-
-            if (string.IsNullOrWhiteSpace(connectionString))
-            {
-                throw new LiteDbConnectionFactoryException(
-                    "Cannot find database connection string in configuration file.");
-            }
-
-            this.Database = new LiteDatabase(connectionString);
+            throw new LiteDbConnectionFactoryException(
+                "Cannot find database connection string in configuration file.");
         }
 
-        private LiteDatabase Database { get; }
-
-
-        public LiteDatabase GetConnection()
-        {
-            return this.Database;
-        }
+        this.Database = new LiteDatabase(connectionString);
     }
 
-    [Serializable]
-    public class LiteDbConnectionFactoryException : Exception
+    private LiteDatabase Database { get; }
+
+
+    public LiteDatabase GetConnection()
     {
-        public LiteDbConnectionFactoryException(string message) : base(message)
-        {
-        }
+        return this.Database;
+    }
+}
+
+[Serializable]
+public class LiteDbConnectionFactoryException : Exception
+{
+    public LiteDbConnectionFactoryException(string message) : base(message)
+    {
     }
 }

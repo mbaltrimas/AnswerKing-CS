@@ -1,27 +1,26 @@
 ﻿using Answer.King.Api.RequestModels;
 using FluentValidation;
 
-namespace Answer.King.Api.Validators
+namespace Answer.King.Api.Validators;
+
+public class LineItemValidator : AbstractValidator<LineItem>
 {
-    public class LineItemValidator : AbstractValidator<LineItem>
+    public LineItemValidator()
     {
-        public LineItemValidator()
-        {
-            this.RuleFor(li => li.Product)
-                .NotNull()
-                .SetValidator(new ProductIdValidator());
+        this.RuleFor(li => li.Product)
+            .NotNull()
+            .SetValidator(new ProductIdValidator());
 
-            this.RuleFor(li => li.Quantity)
-                .GreaterThanOrEqualTo(0);
-        }
+        this.RuleFor(li => li.Quantity)
+            .GreaterThanOrEqualTo(0);
     }
+}
 
-    public class ProductIdValidator : AbstractValidator<ProductId>
+public class ProductIdValidator : AbstractValidator<ProductId>
+{
+    public ProductIdValidator()
     {
-        public ProductIdValidator()
-        {
-            this.RuleFor(p => p.Id)
-                .NotEmpty();
-        }
+        this.RuleFor(p => p.Id)
+            .NotEmpty();
     }
 }

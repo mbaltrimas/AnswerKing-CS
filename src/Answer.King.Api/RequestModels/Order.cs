@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace Answer.King.Api.RequestModels;
 
-namespace Answer.King.Api.RequestModels
+public record Order
 {
-    public class Order
-    {
-        public IList<LineItem> LineItems { get; set; }
-    }
+    public IList<LineItem> LineItems { get; init; } = null!;
 }

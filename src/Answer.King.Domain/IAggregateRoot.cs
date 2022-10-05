@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Answer.King.Domain;
 
-namespace Answer.King.Domain
+public interface IAggregateRoot
 {
-    public interface IAggregateRoot
-    {
-        Guid Id { get; }
-    }
+    Guid Id { get; }
 }

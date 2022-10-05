@@ -1,51 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
-namespace Answer.King.Test.Common.CustomAsserts
+namespace Answer.King.Test.Common.CustomAsserts;
+
+internal static class Extensions
 {
-    internal static class Extensions
+    internal static void AssertAttributeCount<T>(this ICollection<object> attr)
+        where T : Attribute
     {
-        internal static void AssertAttributeCount<T>(this ICollection<object> attr)
-            where T : Attribute
+        var baseMessage = $"Assert has {typeof(T).Name} attribute failure.";
+
+        if (attr.Count == 0)
         {
-            var baseMessage = $"Assert has {typeof(T).Name} attribute failure.";
-
-            if (attr.Count == 0)
-            {
-                throw new Exception($"{baseMessage} No such attribute.");
-            }
-
-            if (attr.Count > 1)
-            {
-                throw new Exception(
-                    $"{baseMessage} Attribute exists {attr.Count} times.");
-            }
+            throw new Exception($"{baseMessage} No such attribute.");
         }
 
-        internal static void AssertAttributeCountCorrectValue(this ICollection<object> attr, string value)
+        if (attr.Count > 1)
         {
-            var baseMessage = $"Assert has {typeof(EnumMemberAttribute).Name} attribute failure.";
+            throw new Exception(
+                $"{baseMessage} Attribute exists {attr.Count} times.");
+        }
+    }
 
-            if (attr.Count == 0)
-            {
-                throw new Exception($"{baseMessage} No such attribute.");
-            }
+    internal static void AssertAttributeCountCorrectValue(this ICollection<object> attr, string value)
+    {
+        var baseMessage = $"Assert has {typeof(EnumMemberAttribute).Name} attribute failure.";
 
-            if (attr.Count > 1)
-            {
-                throw new Exception(
-                    $"{baseMessage} Attribute exists {attr.Count} times.");
-            }
+        if (attr.Count == 0)
+        {
+            throw new Exception($"{baseMessage} No such attribute.");
+        }
 
-            var attribute = (EnumMemberAttribute)attr.First();
+        if (attr.Count > 1)
+        {
+            throw new Exception(
+                $"{baseMessage} Attribute exists {attr.Count} times.");
+        }
 
-            if (!string.Equals(attribute.Value, value))
-            {
-                throw new Exception(
-                    $"{baseMessage} Attribute value expected to be '{value}' but got '{attribute.Value}'.");
-            }
+        var attribute = (EnumMemberAttribute)attr.First();
+
+        if (!string.Equals(attribute.Value, value))
+        {
+            throw new Exception(
+                $"{baseMessage} Attribute value expected to be '{value}' but got '{attribute.Value}'.");
         }
     }
 }

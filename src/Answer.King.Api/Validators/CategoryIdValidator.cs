@@ -1,14 +1,13 @@
 ﻿using Answer.King.Api.RequestModels;
 using FluentValidation;
 
-namespace Answer.King.Api.Validators
+namespace Answer.King.Api.Validators;
+
+public class CategoryIdValidator : AbstractValidator<CategoryId>
 {
-    public class CategoryIdValidator : AbstractValidator<CategoryId>
+    public CategoryIdValidator()
     {
-        public CategoryIdValidator()
-        {
-            this.RuleFor(c => c.Id)
-                .NotEmpty();
-        }
+        this.RuleFor(c => c.Id)
+            .NotEmpty();
     }
 }
