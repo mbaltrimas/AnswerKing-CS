@@ -1,11 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using Answer.King.Domain.Inventory;
+﻿using Answer.King.Domain.Inventory;
 
-namespace Answer.King.Domain.Repositories
+namespace Answer.King.Domain.Repositories;
+
+public interface ICategoryRepository : IAggregateRepository<Category>
 {
-    public interface ICategoryRepository : IAggregateRepository<Category>
-    {
-        Task<Category> GetByProductId(Guid productId);
-    }
+    Task<Category?> GetByProductId(Guid productId);
 }

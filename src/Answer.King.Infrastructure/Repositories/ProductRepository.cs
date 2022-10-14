@@ -6,38 +6,37 @@ using Answer.King.Domain.Repositories;
 using Answer.King.Domain.Repositories.Models;
 using LiteDB;
 
-namespace Answer.King.Infrastructure.Repositories
+namespace Answer.King.Infrastructure.Repositories;
+
+public class ProductRepository : IProductRepository
 {
-    public class ProductRepository : IProductRepository
+    public ProductRepository(ILiteDbConnectionFactory connections)
     {
-        public ProductRepository(ILiteDbConnectionFactory connections)
-        {
-            var db = connections.GetConnection();
+        var db = connections.GetConnection();
 
-            this.Collection = db.GetCollection<Product>();
-        }
+        this.Collection = db.GetCollection<Product>();
+    }
 
-        private LiteCollection<Product> Collection { get; }
+    private ILiteCollection<Product> Collection { get; }
 
 
-        public Task<Product> Get(Guid id)
-        {
-            return Task.FromResult(this.Collection.FindOne(c => c.Id == id));
-        }
+    public Task<Product?> Get(Guid id)
+    {
+        return Task.FromResult(this.Collection.FindOne(c => c.Id == id))!;
+    }
 
-        public Task<IEnumerable<Product>> Get()
-        {
-            return Task.FromResult(this.Collection.FindAll());
-        }
+    public Task<IEnumerable<Product>> Get()
+    {
+        return Task.FromResult(this.Collection.FindAll());
+    }
 
-        public Task<IEnumerable<Product>> Get(IEnumerable<Guid> ids)
-        {
-            return Task.FromResult(this.Collection.Find(p => ids.Contains(p.Id)));
-        }
+    public Task<IEnumerable<Product>> Get(IEnumerable<Guid> ids)
+    {
+        return Task.FromResult(this.Collection.Find(p => ids.Contains(p.Id)));
+    }
 
-        public Task AddOrUpdate(Product product)
-        {
-            return Task.FromResult(this.Collection.Upsert(product));
-        }
+    public Task AddOrUpdate(Product product)
+    {
+        return Task.FromResult(this.Collection.Upsert(product));
     }
 }

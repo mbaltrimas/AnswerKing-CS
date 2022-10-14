@@ -1,9 +1,8 @@
 ﻿using LiteDB;
 
-namespace Answer.King.Infrastructure.Repositories.Mappings
+namespace Answer.King.Infrastructure.Repositories.Mappings;
+
+public interface IEntityMapping
 {
-    public interface IEntityMapping
-    {
-        void RegisterMapping(BsonMapper mapper);
-    }
+    void RegisterMapping(BsonMapper mapper);
 }

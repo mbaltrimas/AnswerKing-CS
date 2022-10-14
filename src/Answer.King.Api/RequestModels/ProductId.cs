@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Answer.King.Api.RequestModels;
 
-namespace Answer.King.Api.RequestModels
+public record ProductId
 {
-    public class ProductId
-    {
-        public Guid Id { get; set; }
-    }
+    public Guid Id { get; init; }
 }

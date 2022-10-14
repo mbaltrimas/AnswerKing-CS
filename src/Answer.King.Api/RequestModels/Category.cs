@@ -1,9 +1,8 @@
-﻿namespace Answer.King.Api.RequestModels
-{
-    public class Category
-    {
-        public string Name { get; set; }
+﻿namespace Answer.King.Api.RequestModels;
 
-        public string Description { get; set; }
-    }
+public record Category
+{
+    public string Name { get; init; } = null!;
+
+    public string Description { get; init; } = null!;
 }

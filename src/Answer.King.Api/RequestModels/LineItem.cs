@@ -1,9 +1,8 @@
-﻿namespace Answer.King.Api.RequestModels
-{
-    public class LineItem
-    {
-        public ProductId Product { get; set; }
+﻿namespace Answer.King.Api.RequestModels;
 
-        public int Quantity { get; set; }
-    }
+public record LineItem
+{
+    public ProductId Product { get; init; } = null!;
+
+    public int Quantity { get; init; }
 }

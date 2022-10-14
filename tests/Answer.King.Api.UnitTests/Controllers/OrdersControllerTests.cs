@@ -1,6 +1,5 @@
-﻿namespace Answer.King.Api.UnitTests.Controllers
+﻿namespace Answer.King.Api.UnitTests.Controllers;
+
+public class OrdersControllerTests
 {
-    public class OrdersControllerTests
-    {
-    }
 }

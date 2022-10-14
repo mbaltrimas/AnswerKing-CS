@@ -1,11 +1,8 @@
-﻿using System;
+﻿namespace Answer.King.Api.RequestModels;
 
-namespace Answer.King.Api.RequestModels
+public record MakePayment
 {
-    public class MakePayment
-    {
-        public double Amount { get; set; }
+    public double Amount { get; init; }
 
-        public Guid OrderId { get; set; }
-    }
+    public Guid OrderId { get; init; }
 }
