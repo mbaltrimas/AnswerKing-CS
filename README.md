@@ -31,3 +31,29 @@ Now open your browser and navigate to `https://localhost:5001` and you should be
 The project is accompanied by unit tests. The project uses `xUnit` for testing.
 
 [Learn about xUnit](https://xunit.github.io/)
+
+## Code Coverage For Unit Tests 
+
+To generate a report for code coverage: 
+
+Ensure you have 'Run Coverlet Report' extension added -  Extensions menu and select Manage Extensions. Then, search Run Coverlet Report.
+
+VS Code - Click on the Tools tab and 'Run Code Coverage'
+
+Or 
+
+Rider - Click on Tests tab and 'Cover All Tests from Solution'
+
+Or 
+
+In the terminal run: 
+
+- dotnet test --collect:"XPlat Code Coverage"
+
+Then - reportgenerator -reports:"Path\To\TestProject\TestResults\{guid}\coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+
+For example - reportgenerator -reports:"C:\Users\HarryStead\Documents\AnswerKing-CS\tests\Answer.King.Api.UnitTests\TestResults\{guid}\coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+
+[Learn more about .Net code coverage](https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-code-coverage?tabs=windows)
+
+
