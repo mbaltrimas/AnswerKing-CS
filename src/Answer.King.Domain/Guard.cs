@@ -281,13 +281,21 @@ public static class Guard
     [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Source package.")]
     private static bool IsNullableType(this Type type)
     {
-        return !type.IsValueType || type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        return !type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
     }
 
     [Serializable]
     public class EmptyStringException : Exception
     {
         public EmptyStringException(string message) : base(message)
+        {
+        }
+
+        public EmptyStringException () : base()
+        {
+        }
+
+        public EmptyStringException (string? message, Exception? innerException) : base(message, innerException)
         {
         }
     }
@@ -298,12 +306,28 @@ public static class Guard
         public WhitespaceException(string message) : base(message)
         {
         }
+
+        public WhitespaceException () : base()
+        {
+        }
+
+        public WhitespaceException (string? message, Exception? innerException) : base(message, innerException)
+        {
+        }
     }
 
     [Serializable]
     public class StringExceedsNCharactersException : Exception
     {
         public StringExceedsNCharactersException(string message) : base(message)
+        {
+        }
+
+        public StringExceedsNCharactersException () : base()
+        {
+        }
+
+        public StringExceedsNCharactersException (string? message, Exception? innerException) : base(message, innerException)
         {
         }
     }
@@ -314,12 +338,28 @@ public static class Guard
         public DefaultValueException(string message) : base(message)
         {
         }
+
+        public DefaultValueException () : base()
+        {
+        }
+
+        public DefaultValueException (string? message, Exception? innerException) : base(message, innerException)
+        {
+        }
     }
 
     [Serializable]
     public class EmptyListException : Exception
     {
         public EmptyListException(string message) : base(message)
+        {
+        }
+
+        public EmptyListException () : base()
+        {
+        }
+
+        public EmptyListException (string? message, Exception? innerException) : base(message, innerException)
         {
         }
     }

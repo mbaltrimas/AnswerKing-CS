@@ -1,4 +1,4 @@
-using Answer.King.Api.Services;
+﻿using Answer.King.Api.Services;
 using Answer.King.Domain.Inventory;
 using Answer.King.Domain.Inventory.Models;
 using Answer.King.Domain.Repositories;
@@ -62,7 +62,7 @@ public class CategoryServiceTests
     public async void CreateCategory_ValidCategory_ReturnsNewlyCreatedCategory()
     {
         // Arrange
-        var request = new RequestModels.Category
+        var request = new RequestModels.CategoryDto
         {
             Name = "category",
             Description = "desc"
@@ -90,7 +90,7 @@ public class CategoryServiceTests
         var category = new Category("category", "desc");
         var id = category.Id;
 
-        CategoryRepository.Get(id).Returns(category);
+        this.CategoryRepository.Get(id).Returns(category);
 
         // Act
         var sut = this.GetServiceUnderTest();
@@ -111,7 +111,7 @@ public class CategoryServiceTests
             new Category("category 2", "desc")
         };
             
-        CategoryRepository.Get().Returns(categories);
+        this.CategoryRepository.Get().Returns(categories);
 
         // Act
         var sut = this.GetServiceUnderTest();
@@ -130,7 +130,7 @@ public class CategoryServiceTests
     public async void UpdateCategory_InvalidCategoryId_ReturnsNull()
     {
         // Arrange
-        var updateCategoryRequest = new RequestModels.Category();
+        var updateCategoryRequest = new RequestModels.CategoryDto();
         var categoryId = Guid.NewGuid();
 
         // Act
@@ -148,7 +148,7 @@ public class CategoryServiceTests
         var oldCategory = new Category("old category", "old desc");
         var categoryId = oldCategory.Id;
 
-        var updateCategoryRequest = new RequestModels.Category
+        var updateCategoryRequest = new RequestModels.CategoryDto
         {
             Name = "updated category",
             Description = "updated desc"
