@@ -72,7 +72,7 @@ public class OrderService : IOrderService
             submittedProductIds.Except(matchingProducts.Select(p => p.Id))
                 .ToList();
 
-        if (invalidProducts.Any())
+        if (invalidProducts.Count > 0)
         {
             throw new ProductInvalidException(
                 $"Product id{(invalidProducts.Count > 1 ? "s" : "")} does not exist: {string.Join(',', invalidProducts)}");
@@ -116,11 +116,11 @@ internal class ProductInvalidException : Exception
     {
     }
 
-    public ProductInvalidException () : base()
+    public ProductInvalidException() : base()
     {
     }
 
-    public ProductInvalidException (string? message, Exception? innerException) : base(message, innerException)
+    public ProductInvalidException(string? message, Exception? innerException) : base(message, innerException)
     {
     }
 }
