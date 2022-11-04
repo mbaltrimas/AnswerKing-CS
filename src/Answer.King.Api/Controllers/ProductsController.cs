@@ -61,7 +61,7 @@ public class ProductsController : ControllerBase
     // POST api/products
     [HttpPost]
     [ProducesResponseType(typeof(Product), 201)]
-    [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
     public async Task<IActionResult> Post([FromBody] RequestModels.ProductDto createProduct)
     {
         try
@@ -88,7 +88,7 @@ public class ProductsController : ControllerBase
     // PUT api/products/{GUID}
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(Product), 200)]
-    [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Put(Guid id, [FromBody] RequestModels.ProductDto updateProduct)
     {

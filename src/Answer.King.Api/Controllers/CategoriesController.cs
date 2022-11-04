@@ -64,7 +64,7 @@ public class CategoriesController : ControllerBase
     // POST api/categories
     [HttpPost]
     [ProducesResponseType(typeof(Domain.Inventory.Category), 201)]
-    [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
     public async Task<IActionResult> Post([FromBody] CategoryDto createCategory)
     {
         var category = await this.Categories.CreateCategory(createCategory);
@@ -83,7 +83,7 @@ public class CategoriesController : ControllerBase
     // PUT api/categories/{GUID}
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(Domain.Inventory.Category), 200)]
-    [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Put(Guid id, [FromBody] CategoryDto updateCategory)
     {

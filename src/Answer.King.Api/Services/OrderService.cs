@@ -72,7 +72,7 @@ public class OrderService : IOrderService
             submittedProductIds.Except(matchingProducts.Select(p => p.Id))
                 .ToList();
 
-        if (invalidProducts.Any())
+        if (invalidProducts.Count > 0)
         {
             throw new ProductInvalidException(
                 $"Product id{(invalidProducts.Count > 1 ? "s" : "")} does not exist: {string.Join(',', invalidProducts)}");
@@ -94,17 +94,9 @@ public class OrderService : IOrderService
             return null;
         }
 
-        try
-        {
-            order.CancelOrder();
-            await this.Orders.Save(order);
-        }
-#pragma warning disable RCS1075
-        catch (Exception)
-        {
-            // ignored
-        }
-#pragma warning restore RCS1075
+        order.CancelOrder();
+        await this.Orders.Save(order);
+
         return order;
     }
 }
@@ -116,11 +108,11 @@ internal class ProductInvalidException : Exception
     {
     }
 
-    public ProductInvalidException () : base()
+    public ProductInvalidException() : base()
     {
     }
 
-    public ProductInvalidException (string? message, Exception? innerException) : base(message, innerException)
+    public ProductInvalidException(string? message, Exception? innerException) : base(message, innerException)
     {
     }
 }
