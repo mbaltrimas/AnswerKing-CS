@@ -69,7 +69,7 @@ public class PaymentsController : ControllerBase
     // POST api/payments
     [HttpPost]
     [ProducesResponseType(typeof(Payment), 201)]
-    [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
     public async Task<IActionResult> Post([FromBody] MakePayment makePayment)
     {
         try

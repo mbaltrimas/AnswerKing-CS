@@ -61,7 +61,7 @@ public class OrdersController : ControllerBase
     // POST api/orders
     [HttpPost]
     [ProducesResponseType(typeof(Domain.Orders.Order), 201)]
-    [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
     public async Task<IActionResult> Post([FromBody] OrderDto createOrder)
     {
         try
@@ -88,7 +88,7 @@ public class OrdersController : ControllerBase
     // PUT api/orders/{GUID}
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(Domain.Orders.Order), 200)]
-    [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Put(Guid id, [FromBody] OrderDto updateOrder)
     {
@@ -120,20 +120,30 @@ public class OrdersController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <response code="200">When the order has been cancelled.</response>
+    /// <response code="400">When invalid parameters are provided.</response>
     /// <response code="404">When the order with the given <paramref name="id"/> does not exist.</response>
     // DELETE api/orders/{GUID}
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(Domain.Orders.Order), 200)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Cancel(Guid id)
     {
-        var order = await this.Orders.CancelOrder(id);
-
-        if (order == null)
+        try
         {
-            return this.NotFound();
-        }
+            var order = await this.Orders.CancelOrder(id);
 
-        return this.Ok(order);
+            if (order == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.Ok(order);
+        }
+        catch (OrderLifeCycleException ex)
+        {
+            this.ModelState.AddModelError("Order", ex.Message);
+            return this.BadRequest(this.ModelState);
+        }
     }
 }

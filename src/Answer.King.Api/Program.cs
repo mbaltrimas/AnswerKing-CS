@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Answer.King.Api.OpenApi;
 using Answer.King.Api.Services;
 using Answer.King.Domain.Repositories;
 using Answer.King.Infrastructure;
@@ -30,7 +31,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Answer King API", Version = "v1" });
-    
+    options.SchemaFilter<ValidationProblemDetailsSchemaFilter>();
+    options.SchemaFilter<ProblemDetailsSchemaFilter>();
+
     // Set the comments path for the Swagger JSON and UI.
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);

@@ -81,7 +81,10 @@ public static class OrderExtensions
 
     private static IEnumerable<AddRemoveUpdateAction> GetLineItemQuantityUpdates(this Order order, RequestModels.OrderDto orderChanges)
     {
-        var newProductIds = orderChanges.LineItems.Select(li => li.Product.Id);
+        var newProductIds =
+            orderChanges.LineItems
+                .Where(li => li.Quantity > 0)
+                .Select(li => li.Product.Id);
 
         var lineItemsToUpdate =
             order.LineItems

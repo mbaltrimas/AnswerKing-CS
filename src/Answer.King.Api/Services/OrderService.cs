@@ -94,17 +94,9 @@ public class OrderService : IOrderService
             return null;
         }
 
-        try
-        {
-            order.CancelOrder();
-            await this.Orders.Save(order);
-        }
-#pragma warning disable RCS1075
-        catch (Exception)
-        {
-            // ignored
-        }
-#pragma warning restore RCS1075
+        order.CancelOrder();
+        await this.Orders.Save(order);
+
         return order;
     }
 }
