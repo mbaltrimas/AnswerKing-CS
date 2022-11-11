@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Answer.King.Domain.Repositories.Models;
@@ -11,7 +10,7 @@ namespace Answer.King.Infrastructure.Repositories.Mappings;
 internal static class ProductFactory
 {
     public static Product CreateProduct(
-        Guid id,
+        long id,
         string name,
         string description,
         double price,
@@ -29,7 +28,7 @@ internal static class ProductFactory
          */
         try
         {
-            return (Product) ctor?.Invoke(parameters)!;
+            return (Product)ctor?.Invoke(parameters)!;
         }
         catch (TargetInvocationException ex)
         {
