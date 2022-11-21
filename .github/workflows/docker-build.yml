@@ -34,8 +34,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw, value=latest, enable=${{ github.ref == 'refs/heads/main' }}
-            type=raw, value=preview, enable=${{ github.ref == 'refs/heads/develop' }}
+            type=raw, value=main-latest, enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw, value=develop-latest, enable=${{ github.ref == 'refs/heads/develop' }}
 
       - name: Build image
         uses: docker/build-push-action@v2
