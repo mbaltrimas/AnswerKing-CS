@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ env.REGISTRY }}/answerking-cs/answerking-cs-api
+  IMAGE_NAME: answerking-cs/answerking-cs-api
 
 jobs:
   was-success:
@@ -32,7 +32,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY}}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw, value=latest
 
