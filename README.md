@@ -9,7 +9,7 @@ Dotnet implementation of the Answer King Api
 - [Swashbuckle.AspNetCore (Swagger / OpenAPI - Automatically generates Api Documentation)](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
 - [FluentValidation.AspNetCore (A popular .NET library for building strongly-typed validation rules)](https://fluentvalidation.net/)
 
-## Running the solution
+## Running the solutio
 
 Ensure you have the latest [.NET 6 SDK (v6.0.401)](https://www.microsoft.com/net/download/) installed.
 
