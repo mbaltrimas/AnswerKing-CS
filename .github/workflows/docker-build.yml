@@ -1,8 +1,8 @@
 name: Build and push a docker image
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: "release-*"
 
 env:
   REGISTRY: ghcr.io
@@ -29,11 +29,14 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: Set version variable
+        run: echo "VERSION=$(echo $GITHUB.REF | sed -e "s#refs/heads/release-#v#g") >> $GITHUB_ENV
+
       - name: Build image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/AnswerConsulting/answerking-cs:${{ env.VERSION }}
           labels: ${{ steps.meta.outputs.labels }}
