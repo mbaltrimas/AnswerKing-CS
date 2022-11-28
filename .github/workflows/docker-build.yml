@@ -1,17 +1,19 @@
 name: Build and push a docker image
 
 on:
-  push:
+  pull_request:
+    types: [opened, reopened]
     branches:
-      - "release-*"
+      - main
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  was-success:
-    name: Build docker image
+  docker-build-and-publish:
+    name: Build and publish a docker image
+    if: contains('release', github.event.pull_request.base.ref)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
