@@ -42,5 +42,5 @@ jobs:
           context: .
           file: ./dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ IMAGE_NAME }}:${{ env.VERSION }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
           labels: ${{ steps.meta.outputs.labels }}
