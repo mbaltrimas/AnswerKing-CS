@@ -30,7 +30,9 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Set version variable
-        run: echo "VERSION=$(echo $GITHUB.REF | sed -e 's#refs/heads/release-#v#g')" >> $GITHUB_ENV
+        run: |
+          echo "VERSION=$(echo $GITHUB_REF | sed -e 's#refs/heads/release-#v#g')" >> $GITHUB_ENV
+          echo $VERSION
 
       - name: Build image
         uses: docker/build-push-action@v2
