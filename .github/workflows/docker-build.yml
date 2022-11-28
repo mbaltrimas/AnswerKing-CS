@@ -36,6 +36,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
+            type=raw, value=latest
             type=raw, value=${{ env.VERSION }}
 
       - name: Build image
