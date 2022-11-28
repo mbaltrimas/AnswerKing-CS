@@ -1,11 +1,9 @@
 name: Build and push a docker image
 
 on:
-  workflow_run:
-    workflows: [Stage One]
-    branches: [main, develop]
-    types:
-      - completed
+  push:
+    branches:
+      - "release-*"
 
 env:
   REGISTRY: ghcr.io
@@ -32,8 +30,6 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw, value=latest
 
       - name: Build image
         uses: docker/build-push-action@v2
